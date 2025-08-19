@@ -4,7 +4,7 @@ import './Initial.css';
 function Initial({ onJoinRoom, onCreateRoom }) {
   const [roomCode, setRoomCode] = useState('');
   const [playerName, setPlayerName] = useState('');
-  const [selectedColor, setSelectedColor] = useState('#3b82f6'); // Azul como padrão
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0); // Índice da cor selecionada
   const [activeTab, setActiveTab] = useState('join'); // 'join' ou 'create'
 
   // Cores disponíveis para seleção
@@ -23,10 +23,30 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     { color: '#f43f5e', name: 'Rosa-escuro' }
   ];
 
+  // Funções para navegar no carrossel
+  const nextColor = () => {
+    setSelectedColorIndex((prev) => (prev + 1) % availableColors.length);
+  };
+
+  const prevColor = () => {
+    setSelectedColorIndex((prev) => (prev - 1 + availableColors.length) % availableColors.length);
+  };
+
+  // Navegação por teclado
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowRight') {
+      nextColor();
+    } else if (e.key === 'ArrowLeft') {
+      prevColor();
+    }
+  };
+
+  const selectedColor = availableColors[selectedColorIndex];
+
   const handleJoinRoom = (e) => {
     e.preventDefault();
     if (roomCode.trim() && playerName.trim()) {
-      onJoinRoom(roomCode.trim().toUpperCase(), playerName.trim(), selectedColor);
+      onJoinRoom(roomCode.trim().toUpperCase(), playerName.trim(), selectedColor.color);
     }
   };
 
@@ -35,7 +55,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     if (playerName.trim()) {
       // Gerar código da sala (6 caracteres aleatórios)
       const newRoomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-      onCreateRoom(newRoomCode, playerName.trim(), selectedColor);
+      onCreateRoom(newRoomCode, playerName.trim(), selectedColor.color);
     }
   };
 
@@ -65,31 +85,47 @@ function Initial({ onJoinRoom, onCreateRoom }) {
             <form onSubmit={handleJoinRoom} className="form">
               <h2>Entrar em uma Sala</h2>
               
-              {/* Seleção de Cor */}
+              {/* Seleção de Cor - Carrossel */}
               <div className="input-group">
                 <label>Escolha sua cor:</label>
-                <div className="color-selector">
-                  {availableColors.map((colorOption) => (
-                    <button
-                      key={colorOption.color}
-                      type="button"
-                      className={`color-option ${selectedColor === colorOption.color ? 'selected' : ''}`}
-                      style={{ backgroundColor: colorOption.color }}
-                      onClick={() => setSelectedColor(colorOption.color)}
-                      title={colorOption.name}
-                    >
-                      {selectedColor === colorOption.color && '✓'}
-                    </button>
-                  ))}
-                </div>
-                <div className="color-preview">
-                  <div 
-                    className="player-preview"
-                    style={{ backgroundColor: selectedColor }}
+                <div className="color-carousel" onKeyDown={handleKeyDown} tabIndex="0">
+                  <button 
+                    type="button" 
+                    className="carousel-btn prev"
+                    onClick={prevColor}
+                    title="Cor anterior"
                   >
-                    <span className="preview-label">Você</span>
+                    ‹
+                  </button>
+                  
+                  <div className="color-display">
+                    <div 
+                      className="player-preview large"
+                      style={{ backgroundColor: selectedColor.color }}
+                    >
+                      <span className="preview-label">Você</span>
+                    </div>
+                    <span className="color-name">{selectedColor.name}</span>
+                    <div className="color-indicators">
+                      {availableColors.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`indicator ${index === selectedColorIndex ? 'active' : ''}`}
+                          onClick={() => setSelectedColorIndex(index)}
+                          title={`Cor ${availableColors[index].name}`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <span className="preview-text">Assim você aparecerá no jogo</span>
+                  
+                  <button 
+                    type="button" 
+                    className="carousel-btn next"
+                    onClick={nextColor}
+                    title="Próxima cor"
+                  >
+                    ›
+                  </button>
                 </div>
               </div>
 
@@ -126,31 +162,47 @@ function Initial({ onJoinRoom, onCreateRoom }) {
             <form onSubmit={handleCreateRoom} className="form">
               <h2>Criar Nova Sala</h2>
               
-              {/* Seleção de Cor */}
+              {/* Seleção de Cor - Carrossel */}
               <div className="input-group">
                 <label>Escolha sua cor:</label>
-                <div className="color-selector">
-                  {availableColors.map((colorOption) => (
-                    <button
-                      key={colorOption.color}
-                      type="button"
-                      className={`color-option ${selectedColor === colorOption.color ? 'selected' : ''}`}
-                      style={{ backgroundColor: colorOption.color }}
-                      onClick={() => setSelectedColor(colorOption.color)}
-                      title={colorOption.name}
-                    >
-                      {selectedColor === colorOption.color && '✓'}
-                    </button>
-                  ))}
-                </div>
-                <div className="color-preview">
-                  <div 
-                    className="player-preview"
-                    style={{ backgroundColor: selectedColor }}
+                <div className="color-carousel" onKeyDown={handleKeyDown} tabIndex="0">
+                  <button 
+                    type="button" 
+                    className="carousel-btn prev"
+                    onClick={prevColor}
+                    title="Cor anterior"
                   >
-                    <span className="preview-label">Você</span>
+                    ‹
+                  </button>
+                  
+                  <div className="color-display">
+                    <div 
+                      className="player-preview large"
+                      style={{ backgroundColor: selectedColor.color }}
+                    >
+                      <span className="preview-label">Você</span>
+                    </div>
+                    <span className="color-name">{selectedColor.name}</span>
+                    <div className="color-indicators">
+                      {availableColors.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`indicator ${index === selectedColorIndex ? 'active' : ''}`}
+                          onClick={() => setSelectedColorIndex(index)}
+                          title={`Cor ${availableColors[index].name}`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <span className="preview-text">Assim você aparecerá no jogo</span>
+                  
+                  <button 
+                    type="button" 
+                    className="carousel-btn next"
+                    onClick={nextColor}
+                    title="Próxima cor"
+                  >
+                    ›
+                  </button>
                 </div>
               </div>
 
@@ -179,6 +231,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
 
         <div className="footer">
           <p>💡 Dica: Você pode clicar em qualquer lugar da tela para se mover!</p>
+          <p>🎨 Use as setas ← → para navegar pelas cores no carrossel</p>
         </div>
       </div>
     </div>
