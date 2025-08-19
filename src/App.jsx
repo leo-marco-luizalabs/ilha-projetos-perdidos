@@ -30,8 +30,8 @@ const availableCharacters = [
   { 
     id: 'knight', 
     name: 'Cavaleiro',
-    frontImage: '/src/assets/characters/knight-front.svg',
-    backImage: '/src/assets/characters/knight-back.svg',
+    frontImage: '/src/assets/characters/one-front.png',
+    backImage: '/src/assets/characters/one-back.png',
     color: '#3b82f6'
   },
   { 
@@ -41,34 +41,6 @@ const availableCharacters = [
     backImage: '/src/assets/characters/wizard-back.svg',
     color: '#8b5cf6'
   },
-  { 
-    id: 'archer', 
-    name: 'Arqueiro',
-    frontImage: '/src/assets/characters/archer-front.png',
-    backImage: '/src/assets/characters/archer-back.png',
-    color: '#22c55e'
-  },
-  { 
-    id: 'rogue', 
-    name: 'Ladino',
-    frontImage: '/src/assets/characters/rogue-front.png',
-    backImage: '/src/assets/characters/rogue-back.png',
-    color: '#ef4444'
-  },
-  { 
-    id: 'paladin', 
-    name: 'Paladino',
-    frontImage: '/src/assets/characters/paladin-front.png',
-    backImage: '/src/assets/characters/paladin-back.png',
-    color: '#f59e0b'
-  },
-  { 
-    id: 'ninja', 
-    name: 'Ninja',
-    frontImage: '/src/assets/characters/ninja-front.png',
-    backImage: '/src/assets/characters/ninja-back.png',
-    color: '#1f2937'
-  }
 ];
 
 function App() {
@@ -952,7 +924,7 @@ function App() {
                   e.target.style.display = 'none';
                 }}
               />
-              <span className="player-label">{playerName}</span>
+              <span className="player-label">Você</span>
               <div className="my-indicator">👑</div>
             </div>
             

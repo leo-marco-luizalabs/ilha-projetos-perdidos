@@ -5,7 +5,6 @@ function Initial({ onJoinRoom, onCreateRoom }) {
   const [roomCode, setRoomCode] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [selectedCharacterIndex, setSelectedCharacterIndex] = useState(0); // Índice do personagem selecionado
-  const [currentView, setCurrentView] = useState('front'); // 'front' ou 'back'
   const [activeTab, setActiveTab] = useState('join'); // 'join' ou 'create'
 
   // Personagens disponíveis para seleção
@@ -13,8 +12,8 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     { 
       id: 'knight', 
       name: 'Cavaleiro',
-      frontImage: '/src/assets/characters/knight-front.svg',
-      backImage: '/src/assets/characters/knight-back.svg',
+      frontImage: '/src/assets/characters/one-front.png',
+      backImage: '/src/assets/characters/one-back.png',
       color: '#3b82f6' // cor de fallback
     },
     { 
@@ -24,34 +23,34 @@ function Initial({ onJoinRoom, onCreateRoom }) {
       backImage: '/src/assets/characters/wizard-back.svg',
       color: '#8b5cf6'
     },
-    { 
-      id: 'archer', 
-      name: 'Arqueiro',
-      frontImage: '/src/assets/characters/archer-front.png',
-      backImage: '/src/assets/characters/archer-back.png',
-      color: '#22c55e'
-    },
-    { 
-      id: 'rogue', 
-      name: 'Ladino',
-      frontImage: '/src/assets/characters/rogue-front.png',
-      backImage: '/src/assets/characters/rogue-back.png',
-      color: '#ef4444'
-    },
-    { 
-      id: 'paladin', 
-      name: 'Paladino',
-      frontImage: '/src/assets/characters/paladin-front.png',
-      backImage: '/src/assets/characters/paladin-back.png',
-      color: '#f59e0b'
-    },
-    { 
-      id: 'ninja', 
-      name: 'Ninja',
-      frontImage: '/src/assets/characters/ninja-front.png',
-      backImage: '/src/assets/characters/ninja-back.png',
-      color: '#1f2937'
-    }
+    // { 
+    //   id: 'archer', 
+    //   name: 'Arqueiro',
+    //   frontImage: '/src/assets/characters/archer-front.png',
+    //   backImage: '/src/assets/characters/archer-back.png',
+    //   color: '#22c55e'
+    // },
+    // { 
+    //   id: 'rogue', 
+    //   name: 'Ladino',
+    //   frontImage: '/src/assets/characters/rogue-front.png',
+    //   backImage: '/src/assets/characters/rogue-back.png',
+    //   color: '#ef4444'
+    // },
+    // { 
+    //   id: 'paladin', 
+    //   name: 'Paladino',
+    //   frontImage: '/src/assets/characters/paladin-front.png',
+    //   backImage: '/src/assets/characters/paladin-back.png',
+    //   color: '#f59e0b'
+    // },
+    // { 
+    //   id: 'ninja', 
+    //   name: 'Ninja',
+    //   frontImage: '/src/assets/characters/ninja-front.png',
+    //   backImage: '/src/assets/characters/ninja-back.png',
+    //   color: '#1f2937'
+    // }
   ];
 
   // Funções para navegar no carrossel
@@ -63,25 +62,12 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     setSelectedCharacterIndex((prev) => (prev - 1 + availableCharacters.length) % availableCharacters.length);
   };
 
-  // Função para alternar entre frente e costas
-  const handleCharacterClick = (area) => {
-    if (area === 'top') {
-      setCurrentView('front');
-    } else if (area === 'bottom') {
-      setCurrentView('back');
-    }
-  };
-
   // Navegação por teclado
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowRight') {
       nextCharacter();
     } else if (e.key === 'ArrowLeft') {
       prevCharacter();
-    } else if (e.key === 'ArrowUp') {
-      setCurrentView('front');
-    } else if (e.key === 'ArrowDown') {
-      setCurrentView('back');
     }
   };
 
@@ -143,16 +129,10 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                   <div className="character-display">
                     <div 
                       className="player-preview large character-preview"
-                      onClick={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const clickY = e.clientY - rect.top;
-                        const area = clickY < rect.height / 2 ? 'top' : 'bottom';
-                        handleCharacterClick(area);
-                      }}
                     >
                       <img 
-                        src={currentView === 'front' ? selectedCharacter.frontImage : selectedCharacter.backImage}
-                        alt={`${selectedCharacter.name} - ${currentView === 'front' ? 'Frente' : 'Costas'}`}
+                        src={selectedCharacter.frontImage}
+                        alt={`${selectedCharacter.name} - Frente`}
                         onError={(e) => {
                           // Fallback para cor sólida se a imagem não carregar
                           e.target.style.display = 'none';
@@ -160,10 +140,6 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                         }}
                       />
                       <span className="preview-label">{selectedCharacter.name}</span>
-                      <div className="view-indicators">
-                        <div className={`view-indicator ${currentView === 'front' ? 'active' : ''}`}>Frente</div>
-                        <div className={`view-indicator ${currentView === 'back' ? 'active' : ''}`}>Costas</div>
-                      </div>
                     </div>
                     <span className="character-name">{selectedCharacter.name}</span>
                     <div className="character-indicators">
@@ -236,16 +212,10 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                   <div className="character-display">
                     <div 
                       className="player-preview large character-preview"
-                      onClick={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const clickY = e.clientY - rect.top;
-                        const area = clickY < rect.height / 2 ? 'top' : 'bottom';
-                        handleCharacterClick(area);
-                      }}
                     >
                       <img 
-                        src={currentView === 'front' ? selectedCharacter.frontImage : selectedCharacter.backImage}
-                        alt={`${selectedCharacter.name} - ${currentView === 'front' ? 'Frente' : 'Costas'}`}
+                        src={selectedCharacter.frontImage}
+                        alt={`${selectedCharacter.name} - Frente`}
                         onError={(e) => {
                           // Fallback para cor sólida se a imagem não carregar
                           e.target.style.display = 'none';
@@ -253,10 +223,6 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                         }}
                       />
                       <span className="preview-label">{selectedCharacter.name}</span>
-                      <div className="view-indicators">
-                        <div className={`view-indicator ${currentView === 'front' ? 'active' : ''}`}>Frente</div>
-                        <div className={`view-indicator ${currentView === 'back' ? 'active' : ''}`}>Costas</div>
-                      </div>
                     </div>
                     <span className="character-name">{selectedCharacter.name}</span>
                     <div className="character-indicators">
