@@ -25,12 +25,66 @@ if (!firebase.apps.length) {
 
 const db = firebase.database();
 
+// Personagens disponíveis
+const availableCharacters = [
+  { 
+    id: 'knight', 
+    name: 'Cavaleiro',
+    frontImage: '/src/assets/characters/knight-front.svg',
+    backImage: '/src/assets/characters/knight-back.svg',
+    color: '#3b82f6'
+  },
+  { 
+    id: 'wizard', 
+    name: 'Mago',
+    frontImage: '/src/assets/characters/wizard-front.svg',
+    backImage: '/src/assets/characters/wizard-back.svg',
+    color: '#8b5cf6'
+  },
+  { 
+    id: 'archer', 
+    name: 'Arqueiro',
+    frontImage: '/src/assets/characters/archer-front.png',
+    backImage: '/src/assets/characters/archer-back.png',
+    color: '#22c55e'
+  },
+  { 
+    id: 'rogue', 
+    name: 'Ladino',
+    frontImage: '/src/assets/characters/rogue-front.png',
+    backImage: '/src/assets/characters/rogue-back.png',
+    color: '#ef4444'
+  },
+  { 
+    id: 'paladin', 
+    name: 'Paladino',
+    frontImage: '/src/assets/characters/paladin-front.png',
+    backImage: '/src/assets/characters/paladin-back.png',
+    color: '#f59e0b'
+  },
+  { 
+    id: 'ninja', 
+    name: 'Ninja',
+    frontImage: '/src/assets/characters/ninja-front.png',
+    backImage: '/src/assets/characters/ninja-back.png',
+    color: '#1f2937'
+  }
+];
+
 function App() {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [otherPlayers, setOtherPlayers] = useState({});
   const [currentRoom, setCurrentRoom] = useState(null);
   const [playerName, setPlayerName] = useState('');
   const [playerColor, setPlayerColor] = useState('#3b82f6');
+  const [playerCharacter, setPlayerCharacter] = useState({
+    id: 'knight',
+    name: 'Cavaleiro',
+    frontImage: '/src/assets/characters/knight-front.svg',
+    backImage: '/src/assets/characters/knight-back.svg',
+    color: '#3b82f6'
+  });
+  const [playerView, setPlayerView] = useState('front'); // 'front' ou 'back'
   const [roomCode, setRoomCode] = useState('');
   const [showChest, setShowChest] = useState(false);
   const [chestCards, setChestCards] = useState([]);
@@ -70,17 +124,25 @@ function App() {
 
   // Funções para gerenciar salas
   const handleJoinRoom = (code, name, color) => {
+    // Encontrar o personagem baseado na cor
+    const character = availableCharacters.find(char => char.color === color) || availableCharacters[0];
+    
     setRoomCode(code);
     setPlayerName(name);
     setPlayerColor(color);
+    setPlayerCharacter(character);
     setCurrentRoom(code);
     setIsRoomOwner(false); // Quem entra não é dono
   };
 
   const handleCreateRoom = (code, name, color) => {
+    // Encontrar o personagem baseado na cor
+    const character = availableCharacters.find(char => char.color === color) || availableCharacters[0];
+    
     setRoomCode(code);
     setPlayerName(name);
     setPlayerColor(color);
+    setPlayerCharacter(character);
     setCurrentRoom(code);
     setIsRoomOwner(true); // Quem cria é dono
   };
@@ -656,6 +718,8 @@ function App() {
           ...pos,
           name: playerName,
           color: playerColor,
+          character: playerCharacter,
+          view: playerView,
           lastSeen: firebase.database.ServerValue.TIMESTAMP
         });
       }
@@ -742,7 +806,7 @@ function App() {
       }
       removePlayer();
     };
-  }, [currentRoom, playerName, playerColor, isRoomOwner]);
+  }, [currentRoom, playerName, playerColor, playerCharacter, playerView, isRoomOwner]);
 
   // Atualizar posição quando state mudar
   useEffect(() => {
@@ -751,18 +815,34 @@ function App() {
         ...position,
         name: playerName,
         color: playerColor,
+        character: playerCharacter,
+        view: playerView,
         lastSeen: firebase.database.ServerValue.TIMESTAMP
       });
     }
-  }, [position, playerName, playerColor, currentRoom]);
+  }, [position, playerName, playerColor, playerCharacter, playerView, currentRoom]);
 
   // Handler para clique na tela
   const handleClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    const clickY = e.clientY - rect.top - 25;
+    const currentY = position.y;
+    
     const newPos = {
       x: e.clientX - rect.left - 25, // centraliza o quadrado
-      y: e.clientY - rect.top - 25
+      y: clickY
     };
+    
+    // Determinar a direção do movimento e ajustar a visão
+    if (clickY < currentY) {
+      // Clicou acima = movendo para cima = mostrar costas
+      setPlayerView('back');
+    } else if (clickY > currentY) {
+      // Clicou abaixo = movendo para baixo = mostrar frente
+      setPlayerView('front');
+    }
+    // Se clicou na mesma altura (clickY === currentY), mantém a visão atual
+    
     setPosition(newPos);
   };
 
@@ -855,14 +935,23 @@ function App() {
           <div className="player-container">
             <div 
               id="me" 
-              className="player me"
+              className="player me character-player"
               style={{
                 left: `${position.x}px`,
                 top: `${position.y}px`,
-                backgroundColor: playerColor
+                backgroundColor: playerCharacter.color
               }}
               onClick={(e) => handlePlayerClick(e, playerIdRef.current)}
             >
+              <img 
+                src={playerView === 'front' ? playerCharacter.frontImage : playerCharacter.backImage}
+                alt={`${playerCharacter.name} - ${playerView === 'front' ? 'Frente' : 'Costas'}`}
+                className="character-image"
+                onError={(e) => {
+                  // Fallback para cor sólida se a imagem não carregar
+                  e.target.style.display = 'none';
+                }}
+              />
               <span className="player-label">{playerName}</span>
               <div className="my-indicator">👑</div>
             </div>
@@ -890,13 +979,24 @@ function App() {
           {Object.entries(otherPlayers).map(([id, playerData]) => (
             <div key={id} className="player-container">
               <div
-                className="player other"
+                className="player other character-player"
                 style={{
                   left: `${playerData.x}px`,
                   top: `${playerData.y}px`,
-                  backgroundColor: playerData.color || '#6b7280'
+                  backgroundColor: (playerData.character?.color || playerData.color) || '#6b7280'
                 }}
               >
+                {playerData.character ? (
+                  <img 
+                    src={playerData.view === 'back' ? playerData.character.backImage : playerData.character.frontImage}
+                    alt={`${playerData.character.name} - ${playerData.view === 'back' ? 'Costas' : 'Frente'}`}
+                    className="character-image"
+                    onError={(e) => {
+                      // Fallback para cor sólida se a imagem não carregar
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : null}
                 <span className="player-label">{playerData.name || id}</span>
               </div>
               

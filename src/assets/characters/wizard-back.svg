@@ -1,0 +1,25 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Mago Costas -->
+  <!-- Corpo -->
+  <rect x="25" y="35" width="30" height="35" fill="#8b5cf6" stroke="#6b21a8" stroke-width="2"/>
+  
+  <!-- Cabeça -->
+  <circle cx="40" cy="20" r="12" fill="#fbbf24" stroke="#92400e" stroke-width="1"/>
+  
+  <!-- Chapéu do Mago (costas) -->
+  <path d="M28 15 Q40 5 52 15 L50 25 Q40 30 30 25 Z" fill="#1e1b4b" stroke="#312e81" stroke-width="1"/>
+  
+  <!-- Capa mágica -->
+  <path d="M25 30 Q40 25 55 30 L52 65 Q40 70 28 65 Z" fill="#1e1b4b" stroke="#312e81" stroke-width="2"/>
+  <circle cx="35" cy="40" r="2" fill="#fbbf24"/>
+  <circle cx="45" cy="45" r="2" fill="#fbbf24"/>
+  <circle cx="40" cy="52" r="2" fill="#fbbf24"/>
+  
+  <!-- Varinha nas costas -->
+  <rect x="35" y="12" width="2" height="18" fill="#92400e"/>
+  <circle cx="36" cy="10" r="2" fill="#f59e0b"/>
+  
+  <!-- Pernas -->
+  <rect x="30" y="65" width="8" height="12" fill="#6b21a8"/>
+  <rect x="42" y="65" width="8" height="12" fill="#6b21a8"/>
+</svg>

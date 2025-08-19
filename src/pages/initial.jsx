@@ -4,49 +4,93 @@ import './Initial.css';
 function Initial({ onJoinRoom, onCreateRoom }) {
   const [roomCode, setRoomCode] = useState('');
   const [playerName, setPlayerName] = useState('');
-  const [selectedColorIndex, setSelectedColorIndex] = useState(0); // Índice da cor selecionada
+  const [selectedCharacterIndex, setSelectedCharacterIndex] = useState(0); // Índice do personagem selecionado
+  const [currentView, setCurrentView] = useState('front'); // 'front' ou 'back'
   const [activeTab, setActiveTab] = useState('join'); // 'join' ou 'create'
 
-  // Cores disponíveis para seleção
-  const availableColors = [
-    { color: '#3b82f6', name: 'Azul' },
-    { color: '#ef4444', name: 'Vermelho' },
-    { color: '#22c55e', name: 'Verde' },
-    { color: '#f59e0b', name: 'Amarelo' },
-    { color: '#8b5cf6', name: 'Roxo' },
-    { color: '#ec4899', name: 'Rosa' },
-    { color: '#06b6d4', name: 'Ciano' },
-    { color: '#f97316', name: 'Laranja' },
-    { color: '#84cc16', name: 'Lima' },
-    { color: '#6366f1', name: 'Índigo' },
-    { color: '#14b8a6', name: 'Verde-água' },
-    { color: '#f43f5e', name: 'Rosa-escuro' }
+  // Personagens disponíveis para seleção
+  const availableCharacters = [
+    { 
+      id: 'knight', 
+      name: 'Cavaleiro',
+      frontImage: '/src/assets/characters/knight-front.svg',
+      backImage: '/src/assets/characters/knight-back.svg',
+      color: '#3b82f6' // cor de fallback
+    },
+    { 
+      id: 'wizard', 
+      name: 'Mago',
+      frontImage: '/src/assets/characters/wizard-front.svg',
+      backImage: '/src/assets/characters/wizard-back.svg',
+      color: '#8b5cf6'
+    },
+    { 
+      id: 'archer', 
+      name: 'Arqueiro',
+      frontImage: '/src/assets/characters/archer-front.png',
+      backImage: '/src/assets/characters/archer-back.png',
+      color: '#22c55e'
+    },
+    { 
+      id: 'rogue', 
+      name: 'Ladino',
+      frontImage: '/src/assets/characters/rogue-front.png',
+      backImage: '/src/assets/characters/rogue-back.png',
+      color: '#ef4444'
+    },
+    { 
+      id: 'paladin', 
+      name: 'Paladino',
+      frontImage: '/src/assets/characters/paladin-front.png',
+      backImage: '/src/assets/characters/paladin-back.png',
+      color: '#f59e0b'
+    },
+    { 
+      id: 'ninja', 
+      name: 'Ninja',
+      frontImage: '/src/assets/characters/ninja-front.png',
+      backImage: '/src/assets/characters/ninja-back.png',
+      color: '#1f2937'
+    }
   ];
 
   // Funções para navegar no carrossel
-  const nextColor = () => {
-    setSelectedColorIndex((prev) => (prev + 1) % availableColors.length);
+  const nextCharacter = () => {
+    setSelectedCharacterIndex((prev) => (prev + 1) % availableCharacters.length);
   };
 
-  const prevColor = () => {
-    setSelectedColorIndex((prev) => (prev - 1 + availableColors.length) % availableColors.length);
+  const prevCharacter = () => {
+    setSelectedCharacterIndex((prev) => (prev - 1 + availableCharacters.length) % availableCharacters.length);
+  };
+
+  // Função para alternar entre frente e costas
+  const handleCharacterClick = (area) => {
+    if (area === 'top') {
+      setCurrentView('front');
+    } else if (area === 'bottom') {
+      setCurrentView('back');
+    }
   };
 
   // Navegação por teclado
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowRight') {
-      nextColor();
+      nextCharacter();
     } else if (e.key === 'ArrowLeft') {
-      prevColor();
+      prevCharacter();
+    } else if (e.key === 'ArrowUp') {
+      setCurrentView('front');
+    } else if (e.key === 'ArrowDown') {
+      setCurrentView('back');
     }
   };
 
-  const selectedColor = availableColors[selectedColorIndex];
+  const selectedCharacter = availableCharacters[selectedCharacterIndex];
 
   const handleJoinRoom = (e) => {
     e.preventDefault();
     if (roomCode.trim() && playerName.trim()) {
-      onJoinRoom(roomCode.trim().toUpperCase(), playerName.trim(), selectedColor.color);
+      onJoinRoom(roomCode.trim().toUpperCase(), playerName.trim(), selectedCharacter.color);
     }
   };
 
@@ -55,7 +99,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     if (playerName.trim()) {
       // Gerar código da sala (6 caracteres aleatórios)
       const newRoomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-      onCreateRoom(newRoomCode, playerName.trim(), selectedColor.color);
+      onCreateRoom(newRoomCode, playerName.trim(), selectedCharacter.color);
     }
   };
 
@@ -83,36 +127,52 @@ function Initial({ onJoinRoom, onCreateRoom }) {
         <div className="tab-content">
           {activeTab === 'join' ? (
             <form onSubmit={handleJoinRoom} className="form">
-              <h2>Entrar em uma Sala</h2>
-              
-              {/* Seleção de Cor - Carrossel */}
+              {/* Seleção de Personagem - Carrossel */}
               <div className="input-group">
-                <label>Escolha sua cor:</label>
-                <div className="color-carousel" onKeyDown={handleKeyDown} tabIndex="0">
+                <label className="label-character">Escolha seu personagem:</label>
+                <div className="character-carousel" onKeyDown={handleKeyDown} tabIndex="0">
                   <button 
                     type="button" 
                     className="carousel-btn prev"
-                    onClick={prevColor}
-                    title="Cor anterior"
+                    onClick={prevCharacter}
+                    title="Personagem anterior"
                   >
                     ‹
                   </button>
                   
-                  <div className="color-display">
+                  <div className="character-display">
                     <div 
-                      className="player-preview large"
-                      style={{ backgroundColor: selectedColor.color }}
+                      className="player-preview large character-preview"
+                      onClick={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const clickY = e.clientY - rect.top;
+                        const area = clickY < rect.height / 2 ? 'top' : 'bottom';
+                        handleCharacterClick(area);
+                      }}
                     >
-                      <span className="preview-label">Você</span>
+                      <img 
+                        src={currentView === 'front' ? selectedCharacter.frontImage : selectedCharacter.backImage}
+                        alt={`${selectedCharacter.name} - ${currentView === 'front' ? 'Frente' : 'Costas'}`}
+                        onError={(e) => {
+                          // Fallback para cor sólida se a imagem não carregar
+                          e.target.style.display = 'none';
+                          e.target.parentElement.style.backgroundColor = selectedCharacter.color;
+                        }}
+                      />
+                      <span className="preview-label">{selectedCharacter.name}</span>
+                      <div className="view-indicators">
+                        <div className={`view-indicator ${currentView === 'front' ? 'active' : ''}`}>Frente</div>
+                        <div className={`view-indicator ${currentView === 'back' ? 'active' : ''}`}>Costas</div>
+                      </div>
                     </div>
-                    <span className="color-name">{selectedColor.name}</span>
-                    <div className="color-indicators">
-                      {availableColors.map((_, index) => (
+                    <span className="character-name">{selectedCharacter.name}</span>
+                    <div className="character-indicators">
+                      {availableCharacters.map((_, index) => (
                         <div
                           key={index}
-                          className={`indicator ${index === selectedColorIndex ? 'active' : ''}`}
-                          onClick={() => setSelectedColorIndex(index)}
-                          title={`Cor ${availableColors[index].name}`}
+                          className={`indicator ${index === selectedCharacterIndex ? 'active' : ''}`}
+                          onClick={() => setSelectedCharacterIndex(index)}
+                          title={`Personagem ${availableCharacters[index].name}`}
                         />
                       ))}
                     </div>
@@ -121,8 +181,8 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                   <button 
                     type="button" 
                     className="carousel-btn next"
-                    onClick={nextColor}
-                    title="Próxima cor"
+                    onClick={nextCharacter}
+                    title="Próximo personagem"
                   >
                     ›
                   </button>
@@ -160,36 +220,52 @@ function Initial({ onJoinRoom, onCreateRoom }) {
             </form>
           ) : (
             <form onSubmit={handleCreateRoom} className="form">
-              <h2>Criar Nova Sala</h2>
-              
-              {/* Seleção de Cor - Carrossel */}
+              {/* Seleção de Personagem - Carrossel */}
               <div className="input-group">
-                <label>Escolha sua cor:</label>
-                <div className="color-carousel" onKeyDown={handleKeyDown} tabIndex="0">
+                <label>Escolha seu personagem:</label>
+                <div className="character-carousel" onKeyDown={handleKeyDown} tabIndex="0">
                   <button 
                     type="button" 
                     className="carousel-btn prev"
-                    onClick={prevColor}
-                    title="Cor anterior"
+                    onClick={prevCharacter}
+                    title="Personagem anterior"
                   >
                     ‹
                   </button>
                   
-                  <div className="color-display">
+                  <div className="character-display">
                     <div 
-                      className="player-preview large"
-                      style={{ backgroundColor: selectedColor.color }}
+                      className="player-preview large character-preview"
+                      onClick={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const clickY = e.clientY - rect.top;
+                        const area = clickY < rect.height / 2 ? 'top' : 'bottom';
+                        handleCharacterClick(area);
+                      }}
                     >
-                      <span className="preview-label">Você</span>
+                      <img 
+                        src={currentView === 'front' ? selectedCharacter.frontImage : selectedCharacter.backImage}
+                        alt={`${selectedCharacter.name} - ${currentView === 'front' ? 'Frente' : 'Costas'}`}
+                        onError={(e) => {
+                          // Fallback para cor sólida se a imagem não carregar
+                          e.target.style.display = 'none';
+                          e.target.parentElement.style.backgroundColor = selectedCharacter.color;
+                        }}
+                      />
+                      <span className="preview-label">{selectedCharacter.name}</span>
+                      <div className="view-indicators">
+                        <div className={`view-indicator ${currentView === 'front' ? 'active' : ''}`}>Frente</div>
+                        <div className={`view-indicator ${currentView === 'back' ? 'active' : ''}`}>Costas</div>
+                      </div>
                     </div>
-                    <span className="color-name">{selectedColor.name}</span>
-                    <div className="color-indicators">
-                      {availableColors.map((_, index) => (
+                    <span className="character-name">{selectedCharacter.name}</span>
+                    <div className="character-indicators">
+                      {availableCharacters.map((_, index) => (
                         <div
                           key={index}
-                          className={`indicator ${index === selectedColorIndex ? 'active' : ''}`}
-                          onClick={() => setSelectedColorIndex(index)}
-                          title={`Cor ${availableColors[index].name}`}
+                          className={`indicator ${index === selectedCharacterIndex ? 'active' : ''}`}
+                          onClick={() => setSelectedCharacterIndex(index)}
+                          title={`Personagem ${availableCharacters[index].name}`}
                         />
                       ))}
                     </div>
@@ -198,8 +274,8 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                   <button 
                     type="button" 
                     className="carousel-btn next"
-                    onClick={nextColor}
-                    title="Próxima cor"
+                    onClick={nextCharacter}
+                    title="Próximo personagem"
                   >
                     ›
                   </button>
@@ -220,7 +296,6 @@ function Initial({ onJoinRoom, onCreateRoom }) {
               </div>
               <div className="info-box">
                 <p>🎯 Um código único será gerado automaticamente para sua sala!</p>
-                <p>📤 Compartilhe o código com seus amigos para que eles possam entrar.</p>
               </div>
               <button type="submit" className="btn btn-success">
                 ✨ Criar Sala
@@ -230,8 +305,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
         </div>
 
         <div className="footer">
-          <p>💡 Dica: Você pode clicar em qualquer lugar da tela para se mover!</p>
-          <p>🎨 Use as setas ← → para navegar pelas cores no carrossel</p>
+          <p>Todos os direitos reservados</p>
         </div>
       </div>
     </div>
