@@ -1,13 +1,24 @@
 .game-container {
   margin: 0;
   background: #eee;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
   overflow: hidden;
   position: relative;
   cursor: crosshair;
   padding-top: 80px; /* Espaço para o header */
   box-sizing: border-box;
+  background-image: url('https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-12d8-61f7-8241-47bc451a1935/raw?se=2025-08-21T02%3A46%3A32Z&sp=r&sv=2024-08-04&sr=b&scid=d8c6534c-9729-5633-b9b1-4e32ac61b5e3&skoid=0da8417a-a4c3-4a19-9b05-b82cee9d8868&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-08-20T20%3A54%3A12Z&ske=2025-08-21T20%3A54%3A12Z&sks=b&skv=2024-08-04&sig=PowkizBoqc7YuknI7GnoNsfV1E7u7nVxzt3oaw2Wd7M%3D');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.game-world {
+  position: relative;
+  width: 3000px; /* Mundo maior que a tela */
+  height: 3000px;
+  background: transparent;
 }
 
 
@@ -407,7 +418,7 @@
 }
 
 .player-container {
-  position: relative;
+  position: absolute;
 }
 
 .player-label {

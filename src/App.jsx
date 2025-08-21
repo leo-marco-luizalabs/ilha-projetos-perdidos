@@ -697,7 +697,6 @@ function App() {
       }
     };
 
-    // Inicializar posição (será atualizada pelo segundo useEffect)
     updatePosition({ x: 100, y: 100 });
 
     // Configurar remoção automática quando desconectar (Firebase feature)
@@ -903,8 +902,10 @@ function App() {
             </button>
           </div>
 
-          {/* Jogador atual */}
-          <div className="player-container">
+          {/* Mundo do jogo */}
+          <div className="game-world">
+            {/* Jogador atual */}
+            <div className="player-container">
             <div 
               id="me" 
               className="player me character-player"
@@ -990,6 +991,7 @@ function App() {
               </div>
             </div>
           ))}
+          </div> {/* Fim do game-world */}
         </div>
       )}
 
