@@ -706,13 +706,26 @@ function App() {
     const handlePlayersUpdate = (snapshot) => {
       const players = snapshot.val();
       const newOtherPlayers = {};
+      console.log("BELOOOO")
 
       if (players) {
         for (let id in players) {
           if (id === playerId) continue;
-          newOtherPlayers[id] = players[id];
+          // newOtherPlayers[id] = players[id];
+          // console.log(players[id])
+
+          const percentX = (players[id].x / players[id].innerWidth) * 100;
+          const percentY = (players[id].y / players[id].innerHeight) * 100;
+
+          newOtherPlayers[id] = {
+            ...players[id],
+            x: (window.innerWidth / 100) * percentX,  // Exemplo: adicionar 50px ao X
+            y: (window.innerHeight / 100) * percentY,  // Exemplo: subtrair 30px do Y
+          };
         }
       }
+
+      console.log("OUTROS JOGADORES:", newOtherPlayers, window.innerWidth, window.innerHeight);
 
       setOtherPlayers(newOtherPlayers);
     };
@@ -788,7 +801,9 @@ function App() {
         color: playerColor,
         character: playerCharacter,
         view: playerView,
-        lastSeen: firebase.database.ServerValue.TIMESTAMP
+        lastSeen: firebase.database.ServerValue.TIMESTAMP,
+        innerHeight: window.innerHeight,
+        innerWidth: window.innerWidth,
       });
     }
   }, [position, playerName, playerColor, playerCharacter, playerView, currentRoom]);
@@ -798,11 +813,17 @@ function App() {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickY = e.clientY - rect.top - 25;
     const currentY = position.y;
-    
+
+    const percentX = ((e.clientX - rect.left - 25 )/ window.innerWidth) * 100;
+    const percentY = (clickY / window.innerHeight) * 100;
+
     const newPos = {
-      x: e.clientX - rect.left - 25, // centraliza o quadrado
-      y: clickY
+      x: (window.innerWidth / 100) * percentX,
+      y: (window.innerHeight / 100) * percentY
     };
+
+    console.log(newPos)
+    // debugger
     
     // Determinar a direção do movimento e ajustar a visão
     if (clickY < currentY) {
