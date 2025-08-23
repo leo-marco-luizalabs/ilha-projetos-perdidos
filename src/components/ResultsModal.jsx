@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ResultsModal.css';
+import { generateActionPlanSummary, isOpenAIConfigured } from '../services/openaiService';
 
 const ResultsModal = ({ 
   isOpen, 
@@ -34,6 +35,11 @@ const ResultsModal = ({
 }) => {
   const [currentPhase, setCurrentPhase] = useState('results'); // 'results', 'island-voting', 'planning', 'summary'
   const [planningForms, setPlanningForms] = useState({});
+  
+  // Estados para resumo da IA
+  const [aiSummary, setAiSummary] = useState('');
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [aiError, setAiError] = useState(null);
 
   // Calcular status de votação dos jogadores
   const calculatePlayersStatus = () => {
@@ -162,6 +168,12 @@ const ResultsModal = ({
     }
   }, [sessionSummary, planningPhase, islandVotingPhase]);
 
+  // Limpar resumo da IA quando os planos mudarem
+  useEffect(() => {
+    setAiSummary('');
+    setAiError(null);
+  }, [planningForms, cardPlans]);
+
   // Sincronizar formulários de planejamento com o Firebase
   React.useEffect(() => {
     if (cardPlans) {
@@ -249,11 +261,6 @@ const ResultsModal = ({
     
     if (currentUserVotes.length >= voteLimit) {
       alert(`Você pode votar em no máximo ${voteLimit} cards!`);
-      return;
-    }
-
-    if (islandUserVotes[cardId]) {
-      alert('Você já votou neste card!');
       return;
     }
     
@@ -618,7 +625,7 @@ const ResultsModal = ({
                 <button
                   className={`vote-btn ${islandUserVotes[card.id] ? 'voted' : ''}`}
                   onClick={() => handleVoteIslandCard(card.id)}
-                  disabled={islandUserVotes[card.id] || currentUserVotes.length >= voteLimit}
+                  // disabled={islandUserVotes[card.id] || currentUserVotes.length >= voteLimit}
                 >
                   {islandUserVotes[card.id] ? '✓ Votado' : 'Votar'}
                 </button>
@@ -737,6 +744,35 @@ const ResultsModal = ({
     );
   };
 
+  // Função para gerar resumo da IA
+  const generateAISummary = async (topCards) => {
+    if (!isOpenAIConfigured()) {
+      setAiError('API key do OpenAI não configurada. Verifique o arquivo .env');
+      return;
+    }
+
+    setIsLoadingAI(true);
+    setAiError(null);
+
+    try {
+      // Preparar dados dos planos para a IA
+      const plansData = topCards.map(card => ({
+        text: card.text,
+        voteCount: card.voteCount,
+        action: planningForms[card.id]?.action || null,
+        responsible: planningForms[card.id]?.responsible || null,
+        deadline: planningForms[card.id]?.deadline || null
+      }));
+
+      const summary = await generateActionPlanSummary(plansData);
+      setAiSummary(summary);
+    } catch (error) {
+      setAiError(error.message);
+    } finally {
+      setIsLoadingAI(false);
+    }
+  };
+
   const renderSummary = () => {
     // Pegar os cards que foram categorizados como "deixarNaIlha"
     const islandCards = categories.deixarNaIlha;
@@ -752,7 +788,7 @@ const ResultsModal = ({
 
     return (
       <div className="summary-content">
-        <h2>📋 Resumo da Sessão - {gameCode}</h2>
+        <h2>📋 Resumo da Sessão</h2>
         <p>Aqui está o resumo completo da sua retrospectiva:</p>
 
         {/* Resumo dos Planos de Ação - MOVIDO PARA O TOPO */}
@@ -764,10 +800,62 @@ const ResultsModal = ({
             <div className="unified-planning-card">
               {/* Resumo Inteligente - MOVIDO PARA O TOPO */}
               <div className="ai-summary-section">
-                <h4>🤖 Resumo Inteligente</h4>
-                <div className="ai-summary-placeholder">
-                  <p>Esta seção será preenchida com um resumo gerado por IA dos planos de ação...</p>
-                  {/* Aqui você integrará com a IA */}
+                <div className="ai-header">
+                  <h4>🤖 Resumo Inteligente</h4>
+                  {!aiSummary && !isLoadingAI && !aiError && (
+                    <button 
+                      className="generate-ai-button"
+                      onClick={() => generateAISummary(topIslandCards)}
+                      disabled={!isOpenAIConfigured()}
+                    >
+                      {!isOpenAIConfigured() ? 'Configurar API' : 'Gerar Resumo IA'}
+                    </button>
+                  )}
+                </div>
+                
+                <div className="ai-summary-content">
+                  {isLoadingAI && (
+                    <div className="ai-loading">
+                      <div className="loading-spinner"></div>
+                      <p>Gerando resumo inteligente...</p>
+                    </div>
+                  )}
+                  
+                  {aiError && (
+                    <div className="ai-error">
+                      <p>❌ {aiError}</p>
+                      <button 
+                        className="retry-button"
+                        onClick={() => generateAISummary(topIslandCards)}
+                      >
+                        Tentar Novamente
+                      </button>
+                    </div>
+                  )}
+                  
+                  {aiSummary && (
+                    <div className="ai-result">
+                      <p>{aiSummary}</p>
+                      <button 
+                        className="regenerate-button"
+                        onClick={() => generateAISummary(topIslandCards)}
+                        disabled={isLoadingAI}
+                      >
+                        🔄 Gerar Novo Resumo
+                      </button>
+                    </div>
+                  )}
+                  
+                  {!aiSummary && !isLoadingAI && !aiError && (
+                    <div className="ai-summary-placeholder">
+                      <p>
+                        {!isOpenAIConfigured() 
+                          ? 'Configure sua API key do OpenAI no arquivo .env para gerar resumos inteligentes.'
+                          : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação.'
+                        }
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 

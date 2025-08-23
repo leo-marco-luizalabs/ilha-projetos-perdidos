@@ -1,15 +1,6 @@
 # 🏝️ Ilha dos Projetos Perdidos
 
-Um jogo multiplayer em tempo rea### ⏰ Estados do Timer:
-- **🟢 Ativo**: Cards podem ser adicionados, timer contando regressivamente
-- **🔴 Inativo**: Aguardando o dono iniciar, cards bloqueados
-- **⏱️ Aguardando**: Para jogadores quando não há timer configurado
-- **🏁 Finalizado**: Timer acabou, opções para ver resultados ou nova rodada
-
-### 📋 Pós-Timer (apenas dono):
-- **👁️ Ver Resultados**: Mostra todos os cards de todos os jogadores
-- **🔄 Nova Rodada**: Inicia um novo timer para mais cards
-- **📊 Estatísticas**: Visualize resumo da sessão completade exploradores podem se conectar, se mover pelo mapa e gerenciar seus próprios baús de tesouro com cards personalizados.
+Um jogo multiplayer em tempo real onde exploradores podem se conectar, se mover pelo mapa e gerenciar seus próprios baús de tesouro com cards personalizados.
 
 ## ✨ Funcionalidades
 
@@ -18,6 +9,56 @@ Um jogo multiplayer em tempo rea### ⏰ Estados do Timer:
 - **Movimento em tempo real**: Clique em qualquer lugar da tela para se mover
 - **Sincronização instantânea**: Veja outros jogadores se movendo em tempo real
 - **Desconexão automática**: Players são removidos automaticamente quando saem
+
+### 🤖 Integração com ChatGPT
+- **Resumo Inteligente**: Gere resumos automáticos dos planos de ação usando IA
+- **Análise Estratégica**: Receba insights sobre prioridades e viabilidade dos planos
+- **Sugestões de Melhoria**: A IA pode sugerir otimizações para seus planos
+
+## 🚀 Configuração
+
+### Pré-requisitos
+- Node.js (versão 18 ou superior)
+- Conta no Firebase (para banco de dados)
+- API Key do OpenAI (para funcionalidades de IA)
+
+### Instalação
+1. Clone o repositório
+```bash
+git clone <repo-url>
+cd ilha-projetos-perdidos
+```
+
+2. Instale as dependências
+```bash
+npm install
+```
+
+3. Configure as variáveis de ambiente
+```bash
+cp .env.example .env
+```
+
+4. Configure sua API key do OpenAI no arquivo `.env`:
+```env
+VITE_OPENAI_API_KEY=sua_api_key_aqui
+```
+
+5. Inicie o servidor de desenvolvimento
+```bash
+npm run dev
+```
+
+### 🔑 Obtendo sua API Key do OpenAI
+1. Acesse [platform.openai.com](https://platform.openai.com)
+2. Faça login ou crie uma conta
+3. Vá em "API Keys" no menu
+4. Clique em "Create new secret key"
+5. Copie a chave e cole no arquivo `.env`
+
+**Nota**: Mantenha sua API key segura e nunca a compartilhe publicamente!
+
+## 📋 Funcionalidades de Retrospectiva
 
 ### 📦 Sistema de Baús
 - **Baú pessoal**: Cada jogador tem seu próprio baú de tesouro
