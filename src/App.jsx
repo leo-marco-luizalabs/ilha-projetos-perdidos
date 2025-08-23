@@ -706,13 +706,10 @@ function App() {
     const handlePlayersUpdate = (snapshot) => {
       const players = snapshot.val();
       const newOtherPlayers = {};
-      console.log("BELOOOO")
 
       if (players) {
         for (let id in players) {
           if (id === playerId) continue;
-          // newOtherPlayers[id] = players[id];
-          // console.log(players[id])
 
           const percentX = (players[id].x / players[id].innerWidth) * 100;
           const percentY = (players[id].y / players[id].innerHeight) * 100;
@@ -724,8 +721,6 @@ function App() {
           };
         }
       }
-
-      console.log("OUTROS JOGADORES:", newOtherPlayers, window.innerWidth, window.innerHeight);
 
       setOtherPlayers(newOtherPlayers);
     };
@@ -822,7 +817,6 @@ function App() {
       y: (window.innerHeight / 100) * percentY
     };
 
-    console.log(newPos)
     // debugger
     
     // Determinar a direção do movimento e ajustar a visão

@@ -117,10 +117,6 @@ const ResultsModal = ({
     // Forçar re-render quando rawVotingData muda usando timestamp
     const dataKey = `${votingDataTimestamp}-${Object.keys(rawVotingData).length}`;
 
-    console.log("uai", dataKey);
-    console.log(players)
-    console.log(playersStatus)
-
     return (
       <div className="players-status-section" key={dataKey}>
         <h3>Status dos Jogadores</h3>
@@ -181,12 +177,6 @@ const ResultsModal = ({
       deixarNaIlha: []
     };
 
-    // Debug - verificar se allCards e cardVotes existem
-    console.log('allCards:', allCards);
-    console.log('cardVotes:', cardVotes);
-    console.log('votingFinished:', votingFinished);
-    console.log('isVotingPhase:', isVotingPhase);
-
     if (!allCards || typeof allCards !== 'object') {
       return categories;
     }
@@ -206,8 +196,6 @@ const ResultsModal = ({
       });
     });
 
-    console.log('cardsArray processado:', cardsArray);
-
     cardsArray.forEach(card => {
       const votes = cardVotes[card.id] || {};
       const voteCount = {
@@ -220,7 +208,6 @@ const ResultsModal = ({
       const totalVotes = voteCount.manter + voteCount.melhorar + voteCount.deixarNaIlha;
       if (totalVotes === 0) {
         // Cards sem votos ficam em uma categoria especial ou não aparecem nos resultados
-        console.log(`Card ${card.id} não tem votos ainda`);
         return; // Pula este card
       }
 
