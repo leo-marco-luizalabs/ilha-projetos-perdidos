@@ -755,6 +755,49 @@ const ResultsModal = ({
         <h2>📋 Resumo da Sessão - {gameCode}</h2>
         <p>Aqui está o resumo completo da sua retrospectiva:</p>
 
+        {/* Resumo dos Planos de Ação - MOVIDO PARA O TOPO */}
+        {topIslandCards.length > 0 && (
+          <div className="action-plans-summary-card">
+            <h3>🎯 Resumo dos Planos de Ação</h3>
+            <p>Principais pontos identificados e suas ações planejadas:</p>
+            
+            <div className="unified-planning-card">
+              {/* Resumo Inteligente - MOVIDO PARA O TOPO */}
+              <div className="ai-summary-section">
+                <h4>🤖 Resumo Inteligente</h4>
+                <div className="ai-summary-placeholder">
+                  <p>Esta seção será preenchida com um resumo gerado por IA dos planos de ação...</p>
+                  {/* Aqui você integrará com a IA */}
+                </div>
+              </div>
+
+              {/* Detalhamento dos planos */}
+              <div className="planning-items-list">
+                {topIslandCards.map((card, index) => (
+                  <div key={card.id} className="planning-item-summary">
+                    <div className="item-header">
+                      <span className="item-number">#{index + 1}</span>
+                      <span className="item-votes">{card.voteCount} votos</span>
+                    </div>
+                    <div className="item-content">
+                      <p className="item-text"><strong>Questão:</strong> {card.text}</p>
+                      {planningForms[card.id] ? (
+                        <div className="item-plan">
+                          <p><strong>Ação:</strong> {planningForms[card.id].action || 'Não definido'}</p>
+                          <p><strong>Responsável:</strong> {planningForms[card.id].responsible || 'Não definido'}</p>
+                          <p><strong>Prazo:</strong> {planningForms[card.id].deadline || 'Não definido'}</p>
+                        </div>
+                      ) : (
+                        <p className="no-plan">Plano não foi definido para este item.</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Resumo das categorias */}
         <div className="categories-summary">
           <h3>Classificação dos Cards</h3>
@@ -785,46 +828,6 @@ const ResultsModal = ({
             )
           ))}
         </div>
-
-        {/* Planos de ação */}
-        {topIslandCards.length > 0 && (
-          <div className="action-plans-summary">
-            <h3>Planos de Ação</h3>
-            <p>Cards prioritários da ilha com planos definidos:</p>
-            
-            <div className="planning-cards">
-              {topIslandCards.map((card, index) => (
-                <div key={card.id} className="planning-card">
-                  <div className="card-header">
-                    <h4>#{index + 1} - {card.voteCount} votos na ilha</h4>
-                    <p className="card-text">{card.text}</p>
-                  </div>
-
-                  <div className="planning-summary">
-                    {planningForms[card.id] ? (
-                      <>
-                        <div className="plan-item">
-                          <strong>O que vamos fazer:</strong>
-                          <p>{planningForms[card.id].action || 'Não definido'}</p>
-                        </div>
-                        <div className="plan-item">
-                          <strong>Responsável:</strong>
-                          <p>{planningForms[card.id].responsible || 'Não definido'}</p>
-                        </div>
-                        <div className="plan-item">
-                          <strong>Prazo:</strong>
-                          <p>{planningForms[card.id].deadline || 'Não definido'}</p>
-                        </div>
-                      </>
-                    ) : (
-                      <p>Plano não foi definido para este card.</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="summary-actions">
           <button 

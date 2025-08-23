@@ -258,6 +258,11 @@
   border: 2px solid;
 }
 
+.category-section h4 {
+  color: black;
+  margin-right: 30px;
+}
+
 .category-section h3 {
   margin: 0 0 20px 0;
   text-align: center;
@@ -613,7 +618,8 @@
 
 /* Resumo da Sessão */
 .summary-content {
-  padding: 20px 0;
+  /* padding: 20px 0; */
+  color: #5d5d5d;
 }
 
 .categories-summary {
@@ -660,6 +666,128 @@
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   border-radius: 15px;
   border: 2px solid #22c55e;
+}
+
+/* Novo card único de planos de ação */
+.action-plans-summary-card {
+  background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+  border: 2px solid #f97316;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(249, 115, 22, 0.15);
+}
+
+.action-plans-summary-card h3 {
+  color: #ea580c;
+  margin: 0 0 15px 0;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.unified-planning-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.planning-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.planning-item-summary {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 15px;
+  background: #f9fafb;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.item-number {
+  background: #f97316;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.item-votes {
+  background: #065f46;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-text {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.item-plan {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #f97316;
+}
+
+.item-plan p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+.no-plan {
+  color: #6b7280;
+  font-style: italic;
+  margin: 5px 0;
+}
+
+.ai-summary-section {
+  border-bottom: 2px solid #f3f4f6;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.ai-summary-section h4 {
+  color: #374151;
+  margin: 0 0 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-summary-placeholder {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 2px dashed #0284c7;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  color: #0369a1;
+}
+
+.ai-summary-placeholder p {
+  margin: 0;
+  font-style: italic;
 }
 
 .no-selected-cards {
@@ -1006,6 +1134,7 @@
   border-radius: 15px;
   font-weight: bold;
   font-size: 0.9rem;
+  margin-left: 10px;
 }
 
 .player-cards {
