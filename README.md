@@ -10,17 +10,18 @@ Um jogo multiplayer em tempo real onde exploradores podem se conectar, se mover 
 - **Sincronização instantânea**: Veja outros jogadores se movendo em tempo real
 - **Desconexão automática**: Players são removidos automaticamente quando saem
 
-### 🤖 Integração com ChatGPT
+### 🤖 Integração com DeepAI (GRATUITO!)
 - **Resumo Inteligente**: Gere resumos automáticos dos planos de ação usando IA
-- **Análise Estratégica**: Receba insights sobre prioridades e viabilidade dos planos
-- **Sugestões de Melhoria**: A IA pode sugerir otimizações para seus planos
+- **500 resumos por dia**: Limite generoso para uso gratuito
+- **Sem custos**: API completamente gratuita para funcionalidades de IA
+- **Análise de texto**: Sumarização automática dos planos de ação
 
 ## 🚀 Configuração
 
 ### Pré-requisitos
 - Node.js (versão 18 ou superior)
 - Conta no Firebase (para banco de dados)
-- API Key do OpenAI (para funcionalidades de IA)
+- API Key do DeepAI (GRATUITA - para funcionalidades de IA)
 
 ### Instalação
 1. Clone o repositório
@@ -39,9 +40,9 @@ npm install
 cp .env.example .env
 ```
 
-4. Configure sua API key do OpenAI no arquivo `.env`:
+4. Configure sua API key do DeepAI no arquivo `.env`:
 ```env
-VITE_OPENAI_API_KEY=sua_api_key_aqui
+VITE_DEEPAI_API_KEY=sua_api_key_aqui
 ```
 
 5. Inicie o servidor de desenvolvimento
@@ -49,12 +50,18 @@ VITE_OPENAI_API_KEY=sua_api_key_aqui
 npm run dev
 ```
 
-### 🔑 Obtendo sua API Key do OpenAI
-1. Acesse [platform.openai.com](https://platform.openai.com)
-2. Faça login ou crie uma conta
-3. Vá em "API Keys" no menu
-4. Clique em "Create new secret key"
+### 🔑 Obtendo sua API Key do DeepAI (GRATUITA!)
+1. Acesse [deepai.org](https://deepai.org)
+2. Clique em "Sign Up" e crie uma conta gratuita
+3. Após o login, vá para seu dashboard
+4. Encontre sua API key na seção "API Keys"
 5. Copie a chave e cole no arquivo `.env`
+
+**Vantagens da DeepAI:**
+- ✅ **Completamente GRATUITA**
+- ✅ **500 chamadas por dia** (suficiente para a maioria dos usos)
+- ✅ **Sem necessidade de cartão de crédito**
+- ✅ **Setup simples e rápido**
 
 **Nota**: Mantenha sua API key segura e nunca a compartilhe publicamente!
 
