@@ -12,17 +12,31 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     { 
       id: 'knight', 
       name: 'Cavaleiro',
-      frontImage: '/src/assets/characters/one-front.png',
-      backImage: '/src/assets/characters/one-back.png',
-      color: '#3b82f6' // cor de fallback
+      frontImage: '/src/assets/characters/persona-1-front.png',
+      backImage: '/src/assets/characters/persona-1-back.png',
+      color: 'transparent'
     },
     { 
       id: 'wizard', 
       name: 'Mago',
-      frontImage: '/src/assets/characters/wizard-front.svg',
-      backImage: '/src/assets/characters/wizard-back.svg',
-      color: '#8b5cf6'
+      frontImage: '/src/assets/characters/persona-2-front.png',
+      backImage: '/src/assets/characters/persona-2-back.png',
+      color: 'transparent'
     },
+    { 
+    id: 'belo', 
+    name: 'Belo',
+    frontImage: '/src/assets/characters/persona-3-front.png',
+    backImage: '/src/assets/characters/persona-3-back.png',
+    color: 'transparent'
+  },
+  { 
+    id: 'show', 
+    name: 'Show',
+    frontImage: '/src/assets/characters/persona-4-front.png',
+    backImage: '/src/assets/characters/persona-4-back.png',
+    color: 'transparent'
+  },
     // { 
     //   id: 'archer', 
     //   name: 'Arqueiro',

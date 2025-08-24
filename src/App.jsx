@@ -30,16 +30,30 @@ const availableCharacters = [
   { 
     id: 'knight', 
     name: 'Cavaleiro',
-    frontImage: '/src/assets/characters/one-front.png',
-    backImage: '/src/assets/characters/one-back.png',
-    color: '#3b82f6'
+    frontImage: '/src/assets/characters/persona-1-front.png',
+    backImage: '/src/assets/characters/persona-1-back.png',
+    color: 'transparent'
   },
   { 
     id: 'wizard', 
     name: 'Mago',
-    frontImage: '/src/assets/characters/wizard-front.svg',
-    backImage: '/src/assets/characters/wizard-back.svg',
-    color: '#8b5cf6'
+    frontImage: '/src/assets/characters/persona-2-front.png',
+    backImage: '/src/assets/characters/persona-2-back.png',
+    color: 'transparent'
+  },
+  { 
+    id: 'belo', 
+    name: 'Belo',
+    frontImage: '/src/assets/characters/persona-3-front.png',
+    backImage: '/src/assets/characters/persona-3-back.png',
+    color: 'transparent'
+  },
+  { 
+    id: 'show', 
+    name: 'Show',
+    frontImage: '/src/assets/characters/persona-4-front.png',
+    backImage: '/src/assets/characters/persona-4-back.png',
+    color: 'transparent'
   },
 ];
 
@@ -941,15 +955,14 @@ function App() {
                 }}
               />
               <span className="player-label">Você</span>
-              <div className="my-indicator">👑</div>
             </div>
             
             {/* Baú do jogador atual */}
             <div 
               className="chest my-chest clickable"
               style={{
-                left: `${position.x + 60}px`,
-                top: `${position.y}px`
+                left: `${position.x + 40}px`,
+                top: `${position.y - 45}px`
               }}
               onClick={(e) => handlePlayerClick(e, playerIdRef.current)}
               title="Clique para abrir seu baú"

@@ -1,20 +1,20 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #2c3e50; /* Cor de fundo para os espaços que podem sobrar */
-  background-image: url('https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-12d8-61f7-8241-47bc451a1935/raw?se=2025-08-23T00%3A52%3A01Z&sp=r&sv=2024-08-04&sr=b&scid=200d5620-5097-5d36-9956-d354802b0222&skoid=04233560-0ad7-493e-8bf0-1347c317d021&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-08-22T21%3A11%3A43Z&ske=2025-08-23T21%3A11%3A43Z&sks=b&skv=2024-08-04&sig=ihs/nAi/RlssIwfP/EMq/w7QVuFhOhFGeNYPq22lkEk%3D'); /* Coloque sua imagem na pasta src/assets/images/ */
-  background-size: contain; /* Mostra a imagem completa, pode ter espaços nas bordas */
-  background-repeat: no-repeat; /* Não repete a imagem */
-  background-position: center; /* Centraliza a imagem */
-  background-attachment: fixed; /* Fixa o background mesmo com scroll */
+  /* background-color: #2c3e50; */
+  background-image: url('./assets/background-body.png');
+  /* background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed; */
   width: 100vw;
   height: 100vh;
   overflow: hidden;
 }
 
 .game-container {
-  margin: 0;
-  width: 100vw;
+  margin: 0 auto;
+  width: 80vw;
   height: 100vh;
   overflow: hidden;
   position: relative;
@@ -22,6 +22,11 @@ body {
   padding-top: 80px; /* Espaço para o header */
   box-sizing: border-box;
   background: transparent; /* Remove qualquer background do container para usar o do body */
+  background-image: url('./assets/background-3.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .game-world {
@@ -286,8 +291,8 @@ body {
 
 .player {
   position: absolute;
-  width: 50px;
-  height: 7rem;
+  width: 40px;
+  height: 5rem;
   border-radius: 10px;
   transition: left 0.2s linear, top 0.2s linear;
   display: flex;
@@ -300,7 +305,7 @@ body {
   cursor: pointer;
   /* border: 2px solid rgba(255, 255, 255, 0.3); */
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .player.character-player {
@@ -343,8 +348,8 @@ body {
 
 .chest {
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   background: #8b4513;
   border: 2px solid #654321;
   border-radius: 8px;
@@ -433,7 +438,8 @@ body {
 
 .player-label {
   position: absolute;
-  bottom: 0;
+  top: -30px;
+  /* bottom: 0; */
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.9);
