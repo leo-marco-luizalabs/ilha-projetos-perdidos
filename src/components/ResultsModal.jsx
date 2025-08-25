@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ResultsModal.css';
-import { generateActionPlanSummary, isOpenAIConfigured } from '../services/deepaiService';
+import { generateActionPlanSummary, isOpenAIConfigured } from '../services/huggingfaceService';
 
 const ResultsModal = ({ 
   isOpen, 
@@ -747,7 +747,7 @@ const ResultsModal = ({
   // Função para gerar resumo da IA
   const generateAISummary = async (topCards) => {
     if (!isOpenAIConfigured()) {
-      setAiError('API key do DeepAI não configurada. Verifique o arquivo .env');
+      setAiError('Token da API do Hugging Face não configurado. Verifique o arquivo .env');
       return;
     }
 
@@ -850,8 +850,8 @@ const ResultsModal = ({
                     <div className="ai-summary-placeholder">
                       <p>
                         {!isOpenAIConfigured() 
-                          ? 'Configure sua API key do DeepAI no arquivo .env para gerar resumos inteligentes. 500 resumos gratuitos por dia!'
-                          : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação. API gratuita com 500 chamadas/dia.'
+                          ? 'Configure seu token do Hugging Face no arquivo .env para gerar resumos inteligentes. Completamente GRATUITO!'
+                          : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação. API gratuita da Hugging Face.'
                         }
                       </p>
                     </div>

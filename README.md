@@ -10,18 +10,18 @@ Um jogo multiplayer em tempo real onde exploradores podem se conectar, se mover 
 - **Sincronização instantânea**: Veja outros jogadores se movendo em tempo real
 - **Desconexão automática**: Players são removidos automaticamente quando saem
 
-### 🤖 Integração com DeepAI (GRATUITO!)
+### 🤖 Integração com Hugging Face (GRATUITO!)
 - **Resumo Inteligente**: Gere resumos automáticos dos planos de ação usando IA
-- **500 resumos por dia**: Limite generoso para uso gratuito
-- **Sem custos**: API completamente gratuita para funcionalidades de IA
-- **Análise de texto**: Sumarização automática dos planos de ação
+- **Modelo BART**: Facebook BART-Large-CNN para sumarização de alta qualidade
+- **Sem custos**: API completamente gratuita para uso pessoal
+- **Sem limites restritivos**: Para projetos pequenos e médios
 
 ## 🚀 Configuração
 
 ### Pré-requisitos
 - Node.js (versão 18 ou superior)
 - Conta no Firebase (para banco de dados)
-- API Key do DeepAI (GRATUITA - para funcionalidades de IA)
+- Token do Hugging Face (GRATUITO - para funcionalidades de IA)
 
 ### Instalação
 1. Clone o repositório
@@ -40,9 +40,9 @@ npm install
 cp .env.example .env
 ```
 
-4. Configure sua API key do DeepAI no arquivo `.env`:
+4. Configure seu token do Hugging Face no arquivo `.env`:
 ```env
-VITE_DEEPAI_API_KEY=sua_api_key_aqui
+VITE_HUGGINGFACE_API_KEY=seu_token_aqui
 ```
 
 5. Inicie o servidor de desenvolvimento
@@ -50,20 +50,23 @@ VITE_DEEPAI_API_KEY=sua_api_key_aqui
 npm run dev
 ```
 
-### 🔑 Obtendo sua API Key do DeepAI (GRATUITA!)
-1. Acesse [deepai.org](https://deepai.org)
+### 🔑 Obtendo seu Token do Hugging Face (GRATUITO!)
+1. Acesse [huggingface.co](https://huggingface.co)
 2. Clique em "Sign Up" e crie uma conta gratuita
-3. Após o login, vá para seu dashboard
-4. Encontre sua API key na seção "API Keys"
-5. Copie a chave e cole no arquivo `.env`
+3. Após o login, vá para [Settings > Access Tokens](https://huggingface.co/settings/tokens)
+4. Clique em "New token" e escolha um nome
+5. Selecione "Read" como permissão (suficiente para inference)
+6. Copie o token e cole no arquivo `.env`
 
-**Vantagens da DeepAI:**
-- ✅ **Completamente GRATUITA**
-- ✅ **500 chamadas por dia** (suficiente para a maioria dos usos)
+**Vantagens da Hugging Face:**
+- ✅ **Completamente GRATUITA** para uso pessoal
+- ✅ **Sem limites restritivos** para projetos pequenos/médios
 - ✅ **Sem necessidade de cartão de crédito**
-- ✅ **Setup simples e rápido**
+- ✅ **Modelos de alta qualidade** (Facebook BART)
+- ✅ **Comunidade ativa** e bem documentada
+- ✅ **API estável e confiável**
 
-**Nota**: Mantenha sua API key segura e nunca a compartilhe publicamente!
+**Nota**: Mantenha seu token seguro e nunca o compartilhe publicamente!
 
 ## 📋 Funcionalidades de Retrospectiva
 
