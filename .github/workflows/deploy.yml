@@ -3,32 +3,28 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-# Permite execução manual do workflow
   workflow_dispatch:
 
-# Define permissões para o GITHUB_TOKEN
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Permite apenas um deployment simultâneo
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Job de build
-  build:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -40,7 +36,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Variável de ambiente com o token da Hugging Face
           VITE_HUGGINGFACE_TOKEN: ${{ secrets.VITE_HUGGINGFACE_TOKEN }}
 
       - name: Setup Pages
@@ -51,15 +46,6 @@ jobs:
         with:
           path: ./dist
 
-  # Job de deploy
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
