@@ -30,29 +30,29 @@ const availableCharacters = [
   { 
     id: 'knight', 
     name: 'Cavaleiro',
-    frontImage: '/src/assets/characters/persona-1-front.png',
-    backImage: '/src/assets/characters/persona-1-back.png',
+    frontImage: '/assets/characters/persona-1-front.png',
+    backImage: '/assets/characters/persona-1-back.png',
     color: 'transparent'
   },
   { 
     id: 'wizard', 
     name: 'Mago',
-    frontImage: '/src/assets/characters/persona-2-front.png',
-    backImage: '/src/assets/characters/persona-2-back.png',
+    frontImage: '/assets/characters/persona-2-front.png',
+    backImage: '/assets/characters/persona-2-back.png',
     color: 'transparent'
   },
   { 
     id: 'belo', 
     name: 'Belo',
-    frontImage: '/src/assets/characters/persona-3-front.png',
-    backImage: '/src/assets/characters/persona-3-back.png',
+    frontImage: '/assets/characters/persona-3-front.png',
+    backImage: '/assets/characters/persona-3-back.png',
     color: 'transparent'
   },
   { 
     id: 'show', 
     name: 'Show',
-    frontImage: '/src/assets/characters/persona-4-front.png',
-    backImage: '/src/assets/characters/persona-4-back.png',
+    frontImage: '/assets/characters/persona-4-front.png',
+    backImage: '/assets/characters/persona-4-back.png',
     color: 'transparent'
   },
 ];
@@ -66,8 +66,8 @@ function App() {
   const [playerCharacter, setPlayerCharacter] = useState({
     id: 'knight',
     name: 'Cavaleiro',
-    frontImage: '/src/assets/characters/knight-front.svg',
-    backImage: '/src/assets/characters/knight-back.svg',
+    frontImage: '/assets/characters/knight-front.svg',
+    backImage: '/assets/characters/knight-back.svg',
     color: '#3b82f6'
   });
   const [playerView, setPlayerView] = useState('front'); // 'front' ou 'back'

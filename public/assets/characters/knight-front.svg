@@ -1,0 +1,27 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Cavaleiro Frente -->
+  <!-- Corpo -->
+  <rect x="25" y="35" width="30" height="35" fill="#3b82f6" stroke="#1e40af" stroke-width="2"/>
+  
+  <!-- Cabeça -->
+  <circle cx="40" cy="20" r="12" fill="#fbbf24" stroke="#92400e" stroke-width="1"/>
+  
+  <!-- Elmo -->
+  <path d="M28 15 Q40 10 52 15 L50 25 Q40 30 30 25 Z" fill="#6b7280" stroke="#374151" stroke-width="1"/>
+  
+  <!-- Espada -->
+  <rect x="60" y="15" width="3" height="25" fill="#9ca3af"/>
+  <rect x="58" y="12" width="7" height="4" fill="#92400e"/>
+  
+  <!-- Escudo -->
+  <ellipse cx="18" cy="30" rx="8" ry="12" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+  <path d="M15 25 L21 25 L18 30 Z" fill="#fbbf24"/>
+  
+  <!-- Pernas -->
+  <rect x="30" y="65" width="8" height="12" fill="#1e40af"/>
+  <rect x="42" y="65" width="8" height="12" fill="#1e40af"/>
+  
+  <!-- Olhos -->
+  <circle cx="36" cy="18" r="1" fill="#000"/>
+  <circle cx="44" cy="18" r="1" fill="#000"/>
+</svg>

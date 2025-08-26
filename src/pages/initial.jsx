@@ -12,50 +12,50 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     { 
       id: 'knight', 
       name: 'Cavaleiro',
-      frontImage: '/src/assets/characters/persona-1-front.png',
-      backImage: '/src/assets/characters/persona-1-back.png',
+      frontImage: '/assets/characters/persona-1-front.png',
+      backImage: '/assets/characters/persona-1-back.png',
       color: 'transparent'
     },
     { 
       id: 'wizard', 
       name: 'Mago',
-      frontImage: '/src/assets/characters/persona-2-front.png',
-      backImage: '/src/assets/characters/persona-2-back.png',
+      frontImage: '/assets/characters/persona-2-front.png',
+      backImage: '/assets/characters/persona-2-back.png',
       color: 'transparent'
     },
     { 
     id: 'belo', 
     name: 'Belo',
-    frontImage: '/src/assets/characters/persona-3-front.png',
-    backImage: '/src/assets/characters/persona-3-back.png',
+    frontImage: '/assets/characters/persona-3-front.png',
+    backImage: '/assets/characters/persona-3-back.png',
     color: 'transparent'
   },
   { 
     id: 'show', 
     name: 'Show',
-    frontImage: '/src/assets/characters/persona-4-front.png',
-    backImage: '/src/assets/characters/persona-4-back.png',
+    frontImage: '/assets/characters/persona-4-front.png',
+    backImage: '/assets/characters/persona-4-back.png',
     color: 'transparent'
   },
     // { 
     //   id: 'archer', 
     //   name: 'Arqueiro',
-    //   frontImage: '/src/assets/characters/archer-front.png',
-    //   backImage: '/src/assets/characters/archer-back.png',
+    //   frontImage: '/assets/characters/archer-front.png',
+    //   backImage: '/assets/characters/archer-back.png',
     //   color: '#22c55e'
     // },
     // { 
     //   id: 'rogue', 
     //   name: 'Ladino',
-    //   frontImage: '/src/assets/characters/rogue-front.png',
-    //   backImage: '/src/assets/characters/rogue-back.png',
+    //   frontImage: '/assets/characters/rogue-front.png',
+    //   backImage: '/assets/characters/rogue-back.png',
     //   color: '#ef4444'
     // },
     // { 
     //   id: 'paladin', 
     //   name: 'Paladino',
-    //   frontImage: '/src/assets/characters/paladin-front.png',
-    //   backImage: '/src/assets/characters/paladin-back.png',
+    //   frontImage: '/assets/characters/paladin-front.png',
+    //   backImage: '/assets/characters/paladin-back.png',
     //   color: '#f59e0b'
     // },
     // { 
