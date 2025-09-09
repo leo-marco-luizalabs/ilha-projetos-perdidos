@@ -148,3 +148,4 @@ npm run dev
 ---
 
 *Explore, conecte-se e organize seus tesouros na Ilha dos Projetos Perdidos!* 🏴‍☠️
+
