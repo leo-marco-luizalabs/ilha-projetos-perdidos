@@ -12,8 +12,8 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     { 
       id: 'knight', 
       name: 'Cavaleiro',
-      frontImage: '/ilha-projetos-perdidos/src/assets/characters/persona-1-front.png',
-      backImage: '/ilha-projetos-perdidos/src/assets/characters/persona-1-back.png',
+      frontImage: '/ilha-projetos-perdidos/assets/characters/persona-1-front.png',
+      backImage: '/ilha-projetos-perdidos/assets/characters/persona-1-back.png',
       color: 'transparent'
     },
     { 
