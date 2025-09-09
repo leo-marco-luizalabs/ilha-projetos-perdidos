@@ -37,22 +37,22 @@ const availableCharacters = [
   { 
     id: 'wizard', 
     name: 'Mago',
-    frontImage: '/ilha-projetos-perdidos/src/assets/characters/persona-2-front.png',
-    backImage: '/ilha-projetos-perdidos/src/assets/characters/persona-2-back.png',
+    frontImage: '/ilha-projetos-perdidos/assets/characters/persona-2-front.png',
+    backImage: '/ilha-projetos-perdidos/assets/characters/persona-2-back.png',
     color: 'transparent'
   },
   { 
     id: 'belo', 
     name: 'Belo',
-    frontImage: '/ilha-projetos-perdidos/src/assets/characters/persona-3-front.png',
-    backImage: '/ilha-projetos-perdidos/src/assets/characters/persona-3-back.png',
+    frontImage: '/ilha-projetos-perdidos/assets/characters/persona-3-front.png',
+    backImage: '/ilha-projetos-perdidos/assets/characters/persona-3-back.png',
     color: 'transparent'
   },
   { 
     id: 'show', 
     name: 'Show',
-    frontImage: '/ilha-projetos-perdidos/src/assets/characters/persona-4-front.png',
-    backImage: '/ilha-projetos-perdidos/src/assets/characters/persona-4-back.png',
+    frontImage: '/ilha-projetos-perdidos/assets/characters/persona-4-front.png',
+    backImage: '/ilha-projetos-perdidos/assets/characters/persona-4-back.png',
     color: 'transparent'
   },
 ];
