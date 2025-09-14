@@ -1,71 +1,12 @@
 import React, { useState } from 'react';
 import './Initial.css';
+import { availableCharacters } from '../utils';
 
 function Initial({ onJoinRoom, onCreateRoom }) {
   const [roomCode, setRoomCode] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [selectedCharacterIndex, setSelectedCharacterIndex] = useState(0); // Índice do personagem selecionado
-  const [activeTab, setActiveTab] = useState('join'); // 'join' ou 'create'
-
-  // Personagens disponíveis para seleção
-  const availableCharacters = [
-    { 
-      id: 'knight', 
-      name: 'Cavaleiro',
-      frontImage: 'assets/characters/persona-1-front.png',
-      backImage: 'assets/characters/persona-1-back.png',
-      color: 'transparent'
-    },
-    { 
-      id: 'wizard', 
-      name: 'Mago',
-      frontImage: 'assets/characters/persona-2-front.png',
-      backImage: 'assets/characters/persona-2-back.png',
-      color: 'transparent'
-    },
-    { 
-    id: 'belo', 
-    name: 'Belo',
-    frontImage: 'assets/characters/persona-3-front.png',
-    backImage: 'assets/characters/persona-3-back.png',
-    color: 'transparent'
-  },
-  { 
-    id: 'show', 
-    name: 'Show',
-    frontImage: 'assets/characters/persona-4-front.png',
-    backImage: 'assets/characters/persona-4-back.png',
-    color: 'transparent'
-  },
-    // { 
-    //   id: 'archer', 
-    //   name: 'Arqueiro',
-    //   frontImage: '/src/assets/characters/archer-front.png',
-    //   backImage: '/src/assets/characters/archer-back.png',
-    //   color: '#22c55e'
-    // },
-    // { 
-    //   id: 'rogue', 
-    //   name: 'Ladino',
-    //   frontImage: '/src/assets/characters/rogue-front.png',
-    //   backImage: '/src/assets/characters/rogue-back.png',
-    //   color: '#ef4444'
-    // },
-    // { 
-    //   id: 'paladin', 
-    //   name: 'Paladino',
-    //   frontImage: '/src/assets/characters/paladin-front.png',
-    //   backImage: '/src/assets/characters/paladin-back.png',
-    //   color: '#f59e0b'
-    // },
-    // { 
-    //   id: 'ninja', 
-    //   name: 'Ninja',
-    //   frontImage: '/src/assets/characters/ninja-front.png',
-    //   backImage: '/src/assets/characters/ninja-back.png',
-    //   color: '#1f2937'
-    // }
-  ];
+  const [activeTab, setActiveTab] = useState('join'); // 'join' ou 'create'  
 
   // Funções para navegar no carrossel
   const nextCharacter = () => {
@@ -90,7 +31,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
   const handleJoinRoom = (e) => {
     e.preventDefault();
     if (roomCode.trim() && playerName.trim()) {
-      onJoinRoom(roomCode.trim().toUpperCase(), playerName.trim(), selectedCharacter.color);
+      onJoinRoom(roomCode.trim().toUpperCase(), playerName.trim(), selectedCharacter.color, selectedCharacter.id);
     }
   };
 
@@ -99,7 +40,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
     if (playerName.trim()) {
       // Gerar código da sala (6 caracteres aleatórios)
       const newRoomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-      onCreateRoom(newRoomCode, playerName.trim(), selectedCharacter.color);
+      onCreateRoom(newRoomCode, playerName.trim(), selectedCharacter.color, selectedCharacter.id);
     }
   };
 

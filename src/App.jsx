@@ -5,6 +5,7 @@ import Initial from './pages/initial';
 import ChestModal from './components/ChestModal';
 import TimerModal from './components/TimerModal';
 import ResultsModal from './components/ResultsModal';
+import { availableCharacters } from './utils';
 import './App.css';
 
 // Configuração do Firebase
@@ -25,37 +26,6 @@ if (!firebase.apps.length) {
 
 const db = firebase.database();
 
-// Personagens disponíveis
-const availableCharacters = [
-  { 
-    id: 'knight', 
-    name: 'Cavaleiro',
-    frontImage: 'assets/characters/persona-1-front.png',
-    backImage: 'assets/characters/persona-1-back.png',
-    color: 'transparent'
-  },
-  { 
-    id: 'wizard', 
-    name: 'Mago',
-    frontImage: 'assets/characters/persona-2-front.png',
-    backImage: 'assets/characters/persona-2-back.png',
-    color: 'transparent'
-  },
-  { 
-    id: 'belo', 
-    name: 'Belo',
-    frontImage: 'assets/characters/persona-3-front.png',
-    backImage: 'assets/characters/persona-3-back.png',
-    color: 'transparent'
-  },
-  { 
-    id: 'show', 
-    name: 'Show',
-    frontImage: 'assets/characters/persona-4-front.png',
-    backImage: 'assets/characters/persona-4-back.png',
-    color: 'transparent'
-  },
-];
 
 function App() {
   const [position, setPosition] = useState({ x: 100, y: 100 });
@@ -109,10 +79,10 @@ function App() {
   const sessionSummaryRefRef = useRef(null);
 
   // Funções para gerenciar salas
-  const handleJoinRoom = (code, name, color) => {
+  const handleJoinRoom = (code, name, color, id) => {
     // Encontrar o personagem baseado na cor
-    const character = availableCharacters.find(char => char.color === color) || availableCharacters[0];
-    
+    const character = availableCharacters.find(char => char.id === id) || availableCharacters[0];
+
     setRoomCode(code);
     setPlayerName(name);
     setPlayerColor(color);
@@ -121,10 +91,10 @@ function App() {
     setIsRoomOwner(false); // Quem entra não é dono
   };
 
-  const handleCreateRoom = (code, name, color) => {
+  const handleCreateRoom = (code, name, color, id) => {
     // Encontrar o personagem baseado na cor
-    const character = availableCharacters.find(char => char.color === color) || availableCharacters[0];
-    
+    const character = availableCharacters.find(char => char.id === id) || availableCharacters[0];
+
     setRoomCode(code);
     setPlayerName(name);
     setPlayerColor(color);
