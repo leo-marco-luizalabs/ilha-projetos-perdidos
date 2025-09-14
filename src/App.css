@@ -2,19 +2,28 @@ body {
   margin: 0;
   padding: 0;
   /* background-color: #2c3e50; */
-  background-image: url('./assets/background-body.png');
-  /* background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed; */
+  /* background-image: url('./assets/back.png'); */
+  /* background-size: contain; */
+  /* background-repeat: no-repeat; */
+  /* background-position: center; */
+  /* background-attachment: fixed; */
   width: 100vw;
   height: 100vh;
   overflow: hidden;
 }
 
+.background-image {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
 .game-container {
+  z-index: 1;
   margin: 0 auto;
-  width: 80vw;
+  width: 100vw;
   height: 100vh;
   overflow: hidden;
   position: relative;
@@ -22,7 +31,7 @@ body {
   padding-top: 80px; /* Espaço para o header */
   box-sizing: border-box;
   background: transparent; /* Remove qualquer background do container para usar o do body */
-  background-image: url('./assets/background-3.png');
+  /* background-image: url('./assets/background-3.jpg'); */
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

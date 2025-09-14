@@ -481,6 +481,80 @@ function App() {
     }
   };
 
+  // useEffect para adicionar event listeners do teclado
+  useEffect(() => {
+    // Só adicionar listener se estiver numa sala (para não interferir na tela inicial)
+    if (!currentRoom) return;
+
+    // Estado para controlar quais teclas estão pressionadas
+    const keysPressed = new Set();
+    
+    // Handler para movimento com teclado
+    const handleKeyDown = (e) => {
+      // Verificar se não está focado em um input ou textarea
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+
+      // Só processar se for uma tecla de seta e não estiver já sendo processada
+      if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        return;
+      }
+
+      e.preventDefault();
+      
+      // Adicionar tecla ao conjunto se não estiver já pressionada
+      if (keysPressed.has(e.key)) {
+        return;
+      }
+      keysPressed.add(e.key);
+
+      const step = 15; // Pixels para mover a cada tecla
+      const currentPos = position;
+      let newPos = { ...currentPos };
+      let newView = playerView;
+
+      switch (e.key) {
+        case 'ArrowUp':
+          newPos.y = Math.max(0, currentPos.y - step);
+          newView = 'back';
+          break;
+        case 'ArrowDown':
+          newPos.y = Math.min(window.innerHeight - 50, currentPos.y + step);
+          newView = 'front';
+          break;
+        case 'ArrowLeft':
+          newPos.x = Math.max(0, currentPos.x - step);
+          // Mantém a visão atual para movimento lateral
+          break;
+        case 'ArrowRight':
+          newPos.x = Math.min(window.innerWidth - 50, currentPos.x + step);
+          // Mantém a visão atual para movimento lateral
+          break;
+      }
+
+      setPosition(newPos);
+      if (newView !== playerView) {
+        setPlayerView(newView);
+      }
+    };
+
+    const handleKeyUp = (e) => {
+      // Remover tecla do conjunto quando soltada
+      keysPressed.delete(e.key);
+    };
+    
+    // Adicionar event listeners
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [currentRoom, position, playerView]); // Dependencies para que a função tenha acesso aos valores atuais
+
   useEffect(() => {
     // Só conectar se estiver em uma sala
     if (!currentRoom || !playerName) return;
@@ -824,6 +898,7 @@ function App() {
           onCreateRoom={handleCreateRoom}
         />
       ) : (
+        <>
         <div className="game-container" onClick={handleClick}>
           {/* Header da sala */}
           <div className="room-header">
@@ -991,6 +1066,8 @@ function App() {
           ))}
           </div> {/* Fim do game-world */}
         </div>
+        <img src="src/assets/back.png" alt="" className='background-image'/>
+        </>
       )}
 
       {/* Modal do Baú */}
