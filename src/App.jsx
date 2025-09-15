@@ -1066,7 +1066,7 @@ function App() {
           ))}
           </div> {/* Fim do game-world */}
         </div>
-        <img src="/src/assets/back.png" alt="" className='background-image'/>
+        <img src="src/assets/back.png" alt="" className='background-image'/>
         </>
       )}
 
