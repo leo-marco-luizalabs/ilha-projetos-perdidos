@@ -319,6 +319,7 @@ body {
 
 .player.character-player {
   padding: 0;
+  background-color: transparent !important;
 }
 
 .character-image {
