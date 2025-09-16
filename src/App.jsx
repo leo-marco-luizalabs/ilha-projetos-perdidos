@@ -1249,23 +1249,6 @@ function App() {
                 ) : null}
                 <span className="player-label">{playerData.name || id}</span>
               </div>
-              
-              {/* Baú do outro jogador */}
-              <div 
-                className="chest other-chest"
-                style={{
-                  left: `${playerData.x + 60}px`,
-                  top: `${playerData.y}px`
-                }}
-                title={`Baú de ${playerData.name || id} - ${allChestCounts[id] || 0} itens`}
-              >
-                📦
-                {(allChestCounts[id] || 0) > 0 && (
-                  <span className="chest-counter other-counter">
-                    {allChestCounts[id]}
-                  </span>
-                )}
-              </div>
             </div>
           ))}
           </div> {/* Fim do game-world */}

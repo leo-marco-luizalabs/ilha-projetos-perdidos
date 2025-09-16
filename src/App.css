@@ -548,10 +548,6 @@ body {
   box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
 }
 
-.chest.other-chest {
-  border-color: #e74c3c;
-}
-
 .chest-counter {
   position: absolute;
   top: -8px;
@@ -572,10 +568,6 @@ body {
 
 .chest-counter.my-counter {
   background: #3498db;
-}
-
-.chest-counter.other-counter {
-  background: #e74c3c;
 }
 
 .chest-counter.my-counter {

@@ -238,11 +238,11 @@ const ResultsModal = ({
 
   const categories = categorizeCards();
 
-  // Calcular limite de votos para votação da ilha
+  // Calcular limite de votos para votação dos cards a melhorar
   const calculateVoteLimit = () => {
-    const islandCardCount = categories.deixarNaIlha.length;
-    if (islandCardCount > 5) {
-      return Math.ceil(islandCardCount * 0.2); // 20% dos cards
+    const improveCardCount = categories.melhorar.length;
+    if (improveCardCount > 5) {
+      return Math.ceil(improveCardCount * 0.2); // 20% dos cards
     }
     return 3; // 3 votos para 5 ou menos cards
   };
@@ -377,16 +377,16 @@ const ResultsModal = ({
           </>
         )}
 
-        {isOwner && categories.deixarNaIlha.length > 0 && (
+        {isOwner && categories.melhorar.length > 0 && (
           <div className="island-voting-info">
-            <h3>Próxima Fase: Votação da Ilha</h3>
-            <p>Os cards que foram para a ilha passarão por uma nova votação.</p>
+            <h3>Próxima Fase: Votação dos Cards a Melhorar</h3>
+            <p>Os cards que precisam ser melhorados passarão por uma nova votação.</p>
             <p>Cada participante terá direito a <strong>{voteLimit} votos</strong>.</p>
             <button 
               className="btn btn-primary"
               onClick={handleStartIslandVoting}
             >
-              Iniciar Votação da Ilha
+              Iniciar Votação dos Cards a Melhorar
             </button>
           </div>
         )}
@@ -582,13 +582,13 @@ const ResultsModal = ({
   };
 
   const renderIslandVoting = () => {
-    // Pegar os cards que foram categorizados como "deixarNaIlha"
-    const islandCards = categories.deixarNaIlha;
+    // Pegar os cards que foram categorizados como "melhorar" (ao invés de "deixarNaIlha")
+    const islandCards = categories.melhorar;
     const currentUserVotes = Object.keys(islandUserVotes).filter(id => islandUserVotes[id]);
     
     return (
       <div className="island-voting-content">
-        <h2>🏝️ Votação da Ilha</h2>
+        <h2>🔧 Votação dos Cards a Melhorar</h2>
         <div className="voting-info">
           <p>Vote nos cards que você considera mais importantes para serem trabalhados.</p>
           <p>Você tem <strong>{voteLimit - currentUserVotes.length} votos restantes</strong> de {voteLimit}.</p>
@@ -639,7 +639,7 @@ const ResultsModal = ({
               className="btn btn-success"
               onClick={handleFinishIslandVoting}
             >
-              Finalizar Votação da Ilha
+              Finalizar Votação dos Cards a Melhorar
             </button>
           </div>
         )}
@@ -648,10 +648,10 @@ const ResultsModal = ({
   };
 
   const renderPlanning = () => {
-    // Pegar os cards que foram categorizados como "deixarNaIlha"
-    const islandCards = categories.deixarNaIlha;
+    // Pegar os cards que foram categorizados como "melhorar"
+    const islandCards = categories.melhorar;
     
-    // Cards que receberam mais votos na votação da ilha
+    // Cards que receberam mais votos na votação dos cards a melhorar
     const topIslandCards = islandCards
       .map(card => ({
         ...card,
@@ -668,7 +668,7 @@ const ResultsModal = ({
 
         {topIslandCards.length === 0 ? (
           <div className="no-voted-cards">
-            <p>🤔 Nenhum card recebeu votos na votação da ilha.</p>
+            <p>🤔 Nenhum card recebeu votos na votação dos cards a melhorar.</p>
             <p>Não há planos de ação para criar nesta sessão.</p>
           </div>
         ) : (
@@ -781,10 +781,10 @@ const ResultsModal = ({
   };
 
   const renderSummary = () => {
-    // Pegar os cards que foram categorizados como "deixarNaIlha"
-    const islandCards = categories.deixarNaIlha;
+    // Pegar os cards que foram categorizados como "melhorar"
+    const islandCards = categories.melhorar;
     
-    // Cards que receberam mais votos na votação da ilha
+    // Cards que receberam mais votos na votação dos cards a melhorar
     const topIslandCards = islandCards
       .map(card => ({
         ...card,
@@ -801,7 +801,7 @@ const ResultsModal = ({
 
         {topIslandCards.length === 0 ? (
           <div className="no-voted-cards">
-            <p>🤔 Nenhum card recebeu votos na votação da ilha.</p>
+            <p>🤔 Nenhum card recebeu votos na votação dos cards a melhorar.</p>
             <p>Esta retrospectiva não gerou planos de ação específicos.</p>
           </div>
         ) : (
@@ -966,7 +966,7 @@ const ResultsModal = ({
         <div className="results-header">
           <h1>
             {currentPhase === 'summary' && '📋 Resumo da Sessão'}
-            {currentPhase === 'island-voting' && '🏝️ Votação da Ilha'}
+            {currentPhase === 'island-voting' && '🔧 Votação dos Cards a Melhorar'}
             {currentPhase === 'planning' && '📋 Planejamento'}
             {currentPhase === 'results' && '📊 Resultados'}
           </h1>
