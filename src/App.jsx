@@ -5,6 +5,7 @@ import Initial from './pages/initial';
 import ChestModal from './components/ChestModal';
 import TimerModal from './components/TimerModal';
 import ResultsModal from './components/ResultsModal';
+import InstructionsModal from './components/InstructionsModal';
 import { availableCharacters } from './utils';
 import './App.css';
 
@@ -69,6 +70,7 @@ function App() {
   const [planningPhase, setPlanningPhase] = useState(false);
   const [cardPlans, setCardPlans] = useState({});
   const [sessionSummary, setSessionSummary] = useState(null);
+  const [showInstructions, setShowInstructions] = useState(false);
   const playerIdRef = useRef("player_" + Math.floor(Math.random() * 10000));
   const myRefRef = useRef(null);
   const playersRefRef = useRef(null);
@@ -1023,9 +1025,19 @@ function App() {
               )}
             </div>
 
-            <button className="leave-button" onClick={handleLeaveRoom}>
-              🚪 Sair da Sala
-            </button>
+            <div className="game-controls">
+              <button 
+                className="instructions-button" 
+                onClick={() => setShowInstructions(true)}
+                title="Ver instruções do jogo"
+              >
+                📚 Instruções
+              </button>
+              
+              <button className="leave-button" onClick={handleLeaveRoom}>
+                🚪 Sair da Sala
+              </button>
+            </div>
           </div>
 
           {/* Mundo do jogo */}
@@ -1203,6 +1215,12 @@ function App() {
           votingDataTimestamp={votingDataTimestamp}
         />
       )}
+
+      {/* Modal de Instruções */}
+      <InstructionsModal
+        isOpen={showInstructions}
+        onClose={() => setShowInstructions(false)}
+      />
     </>
   );
 }
