@@ -40,8 +40,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Variável de ambiente com o token da Hugging Face
-          VITE_HUGGINGFACE_TOKEN: ${{ secrets.VITE_HUGGINGFACE_TOKEN }}
+          # Variável de ambiente com a chave da API do OpenAI
+          VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

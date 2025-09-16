@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ResultsModal.css';
-import { generateActionPlanSummary, isOpenAIConfigured } from '../services/huggingfaceService';
+import { generateActionPlanSummary, isOpenAIConfigured } from '../services/openaiService';
 
 const ResultsModal = ({ 
   isOpen, 
@@ -16,7 +16,6 @@ const ResultsModal = ({
   onStartVoting, 
   onFinishVoting,
   onRestartVoting,
-  gameCode,
   startIslandVoting,
   finishIslandVoting,
   voteIslandCard,
@@ -747,7 +746,7 @@ const ResultsModal = ({
   // Função para gerar resumo da IA
   const generateAISummary = async (topCards) => {
     if (!isOpenAIConfigured()) {
-      setAiError('Token da API do Hugging Face não configurado. Verifique o arquivo .env');
+      setAiError('Chave da API do ChatGPT não configurada. Configure VITE_OPENAI_API_KEY no arquivo .env');
       return;
     }
 
@@ -808,7 +807,7 @@ const ResultsModal = ({
                       onClick={() => generateAISummary(topIslandCards)}
                       disabled={!isOpenAIConfigured()}
                     >
-                      {!isOpenAIConfigured() ? 'Configurar API' : 'Gerar Resumo IA'}
+                      {!isOpenAIConfigured() ? 'Configurar ChatGPT' : '🤖 Gerar Resumo ChatGPT'}
                     </button>
                   )}
                 </div>
@@ -850,8 +849,8 @@ const ResultsModal = ({
                     <div className="ai-summary-placeholder">
                       <p>
                         {!isOpenAIConfigured() 
-                          ? 'Configure seu token do Hugging Face no arquivo .env para gerar resumos inteligentes. Completamente GRATUITO!'
-                          : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação. API gratuita da Hugging Face.'
+                          ? 'Configure sua chave da API do ChatGPT no arquivo .env para gerar resumos inteligentes com IA!'
+                          : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação usando ChatGPT.'
                         }
                       </p>
                     </div>

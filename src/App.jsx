@@ -1186,7 +1186,6 @@ function App() {
           onStartVoting={startVoting}
           onFinishVoting={finishVoting}
           onRestartVoting={restartVoting}
-          gameCode={roomCode}
           startIslandVoting={startIslandVoting}
           finishIslandVoting={finishIslandVoting}
           voteIslandCard={voteIslandCard}
