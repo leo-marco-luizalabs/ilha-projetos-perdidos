@@ -71,6 +71,7 @@ function App() {
   const [cardPlans, setCardPlans] = useState({});
   const [sessionSummary, setSessionSummary] = useState(null);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [showChestHint, setShowChestHint] = useState(false);
   const playerIdRef = useRef("player_" + Math.floor(Math.random() * 10000));
   const myRefRef = useRef(null);
   const playersRefRef = useRef(null);
@@ -417,7 +418,7 @@ function App() {
   };
 
   // Funções para gerenciar baús
-  const openChest = (ownerId) => {
+  const openChest = useCallback((ownerId) => {
     setSelectedChestOwner(ownerId);
     setShowChest(true);
     
@@ -429,7 +430,7 @@ function App() {
       const cards = snapshot.val() || [];
       setChestCards(Array.isArray(cards) ? cards : Object.values(cards));
     });
-  };
+  }, [currentRoom]);
 
   const closeChest = () => {
     setShowChest(false);
@@ -896,6 +897,53 @@ function App() {
     }
   }, [position, playerName, playerColor, playerCharacter, playerView, currentRoom]);
 
+  // Função para calcular distância entre dois pontos
+  const calculateDistance = useCallback((x1, y1, x2, y2) => {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  }, []);
+
+  // Converter vw/vh para pixels
+  const getChestPosition = useCallback(() => {
+    const vw = window.innerWidth / 100;
+    const vh = window.innerHeight / 100;
+    return {
+      x: 27 * vw, // 27vw
+      y: 65 * vh  // 65vh
+    };
+  }, []);
+
+  // useEffect para detectar proximidade com o baú e tecla B
+  useEffect(() => {
+    if (!currentRoom) return;
+
+    const chestPos = getChestPosition();
+    const distance = calculateDistance(position.x, position.y, chestPos.x, chestPos.y);
+    const proximityThreshold = 150; // pixels
+
+    // Mostrar instrução apenas na primeira fase (antes das votações/resultados)
+    const isInFirstPhase = !isVotingPhase && !votingFinished && !islandVotingPhase && !planningPhase && !sessionSummary;
+    const isNear = distance < proximityThreshold;
+    setShowChestHint(isInFirstPhase); // Sempre mostrar na primeira fase, independente da proximidade
+
+    // Handler para tecla B - só funciona quando próximo
+    const handleKeyPress = (e) => {
+      if (e.key.toLowerCase() === 'b' && isNear && isInFirstPhase) {
+        // Verificar se não está focado em um input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+          return;
+        }
+        e.preventDefault();
+        openChest(playerIdRef.current);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [currentRoom, position, calculateDistance, getChestPosition, openChest, isVotingPhase, votingFinished, islandVotingPhase, planningPhase, sessionSummary]);
+
   // Handler para clique na tela
   const handleClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -1078,12 +1126,12 @@ function App() {
               <span className="player-label">Você</span>
             </div>
             
-            {/* Baú do jogador atual */}
+            {/* Baú do jogador atual - FIXO */}
             <div 
-              className="chest my-chest clickable"
+              className="chest my-chest clickable fixed-chest"
               style={{
-                left: `${position.x + 40}px`,
-                top: `${position.y - 45}px`
+                left: '27vw',
+                top: '65vh'
               }}
               onClick={(e) => handlePlayerClick(e, playerIdRef.current)}
               title="Clique para abrir seu baú"
@@ -1093,6 +1141,19 @@ function App() {
                 <span className="chest-counter my-counter">
                   {allChestCounts[playerIdRef.current]}
                 </span>
+              )}
+              
+              {/* Instrução de proximidade */}
+              {showChestHint && (
+                <div 
+                  className="chest-proximity-hint"
+                  style={{
+                    left: '3vh',
+                    top: '-10px'
+                  }}
+                >
+                  Chegue perto e pressione "B" para abrir ou clique no 📦
+                </div>
               )}
             </div>
           </div>

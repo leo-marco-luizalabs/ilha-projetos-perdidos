@@ -71,9 +71,10 @@ npm run dev
 ## 📋 Funcionalidades de Retrospectiva
 
 ### 📦 Sistema de Baús
-- **Baú pessoal**: Cada jogador tem seu próprio baú de tesouro
+- **Baú pessoal**: Cada jogador tem seu próprio baú de tesouro fixo na lateral da tela
 - **Cards personalizados**: Adicione notas/cards tipo post-it ao seu baú
 - **Privacidade**: Apenas você pode abrir e editar seu próprio baú
+- **Posição fixa**: Seu baú fica sempre na mesma posição (lateral esquerda)
 - **Contador visual**: Veja quantos itens cada jogador tem em seu baú
 - **Gestão de cards**: Adicione e remova cards facilmente
 
@@ -97,6 +98,8 @@ npm run dev
 - **Detecção de desconexão**: Múltiplas camadas de detecção quando jogadores saem
 - **Interface responsiva**: Funciona em desktop e mobile
 - **Animações fluidas**: Transições suaves e feedback visual
+- **Sistema de proximidade**: Detecta quando você está perto do baú
+- **Controles por teclado**: Tecla "B" para abrir baú quando próximo
 
 ## 🚀 Como usar
 
@@ -119,8 +122,11 @@ npm run dev
 - **Gerenciar Sala**: Controle total sobre as sessões de cards
 
 ### 👤 Para Jogadores:
-- **Movimento**: Clique em qualquer lugar da tela
-- **Abrir baú**: Clique no seu próprio baú (azul) - apenas quando timer ativo
+- **Movimento**: Clique em qualquer lugar da tela ou use as setas do teclado
+- **Abrir baú**: 
+  - Clique no seu baú fixo (azul na lateral esquerda)
+  - **OU** aproxime-se do baú e pressione a tecla **"B"**
+- **Instrução visual**: Durante a primeira fase, sempre verá "Pressione B para abrir 📦"
 - **Ver informações**: Passe o mouse sobre baús de outros jogadores
 - **Acompanhar tempo**: Visualize o timer no header da sala
 
