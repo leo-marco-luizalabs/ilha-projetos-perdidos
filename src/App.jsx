@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
 import Initial from './pages/initial';
@@ -43,6 +43,8 @@ function App() {
     color: '#3b82f6'
   });
   const [playerView, setPlayerView] = useState('front'); // 'front', 'back', 'left', 'right'
+  const [isWalking, setIsWalking] = useState(false); // Estado de animação
+  const [walkingTimer, setWalkingTimer] = useState(null); // Timer para controlar animação
   const [roomCode, setRoomCode] = useState('');
   const [showChest, setShowChest] = useState(false);
   const [chestCards, setChestCards] = useState([]);
@@ -483,6 +485,32 @@ function App() {
     }
   };
 
+  // Função para ativar animação de caminhada
+  const startWalkingAnimation = useCallback(() => {
+    setIsWalking(true);
+    
+    // Limpar timer anterior se existir
+    if (walkingTimer) {
+      clearTimeout(walkingTimer);
+    }
+    
+    // Definir timer para parar a animação após um tempo
+    const timer = setTimeout(() => {
+      setIsWalking(false);
+    }, 800); // Animação dura 800ms (aumentado para ser mais visível)
+    
+    setWalkingTimer(timer);
+  }, [walkingTimer]);
+
+  // useEffect para limpar timer da animação ao desmontar componente
+  useEffect(() => {
+    return () => {
+      if (walkingTimer) {
+        clearTimeout(walkingTimer);
+      }
+    };
+  }, [walkingTimer]);
+
   // useEffect para adicionar event listeners do teclado
   useEffect(() => {
     // Só adicionar listener se estiver numa sala (para não interferir na tela inicial)
@@ -539,6 +567,9 @@ function App() {
       if (newView !== playerView) {
         setPlayerView(newView);
       }
+      
+      // Ativar animação de caminhada
+      startWalkingAnimation();
     };
 
     const handleKeyUp = (e) => {
@@ -555,7 +586,7 @@ function App() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [currentRoom, position, playerView]); // Dependencies para que a função tenha acesso aos valores atuais
+  }, [currentRoom, position, playerView, startWalkingAnimation]); // Dependencies para que a função tenha acesso aos valores atuais
 
   useEffect(() => {
     // Só conectar se estiver em uma sala
@@ -906,6 +937,9 @@ function App() {
     // Se clicou na mesma posição (deltaX === deltaY === 0), mantém a visão atual
     
     setPosition(newPos);
+    
+    // Ativar animação de caminhada também no clique
+    startWalkingAnimation();
   };
 
   return (
@@ -1000,7 +1034,7 @@ function App() {
             <div className="player-container">
             <div 
               id="me" 
-              className="player me character-player"
+              className={`player me character-player ${isWalking ? 'walking' : ''}`}
               style={{
                 left: `${position.x}px`,
                 top: `${position.y}px`,
@@ -1023,7 +1057,7 @@ function App() {
                   playerView === 'right' ? 'Direita' :
                   'Frente'
                 }`}
-                className="character-image"
+                className={`character-image ${isWalking ? `walking walking-${playerView}` : ''}`}
                 onError={(e) => {
                   // Fallback para cor sólida se a imagem não carregar
                   e.target.style.display = 'none';
