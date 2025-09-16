@@ -16,7 +16,7 @@ Um jogo multiplayer em tempo real onde exploradores podem se conectar, se mover 
 - **Sem custos**: API completamente gratuita para uso pessoal
 - **Sem limites restritivos**: Para projetos pequenos e médios
 
-## 🚀 Configuração!
+## 🚀 Configuração
 
 ### Pré-requisitos
 - Node.js (versão 18 ou superior)
