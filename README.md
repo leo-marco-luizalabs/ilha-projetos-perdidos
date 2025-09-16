@@ -126,7 +126,14 @@ npm run dev
 - **Abrir baú**: 
   - Clique no seu baú fixo (azul na lateral esquerda)
   - **OU** aproxime-se do baú e pressione a tecla **"B"**
-- **Instrução visual**: Durante a primeira fase, sempre verá "Pressione B para abrir 📦"
+- **Ver resultados**:
+  - **Dono da sala**: Clique no pergaminho fixo (dourado no canto inferior direito) após o tempo acabar ou pressione **"B"** próximo a ele
+  - **Participantes**: Aguardam o dono da sala abrir os resultados
+- **Instrução visual**: 
+  - **Durante o timer**: "Pressione B para abrir 📦" (apenas no baú)
+  - **Após o timer acabar**: 
+    - **Dono da sala**: "Pressione B para ver resultados 📜"
+    - **Participantes**: "Aguardando o dono da sala abrir o pergaminho para todos lerem 📜"
 - **Ver informações**: Passe o mouse sobre baús de outros jogadores
 - **Acompanhar tempo**: Visualize o timer no header da sala
 

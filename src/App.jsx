@@ -72,6 +72,7 @@ function App() {
   const [sessionSummary, setSessionSummary] = useState(null);
   const [showInstructions, setShowInstructions] = useState(false);
   const [showChestHint, setShowChestHint] = useState(false);
+  const [showScrollHint, setShowScrollHint] = useState(false);
   const playerIdRef = useRef("player_" + Math.floor(Math.random() * 10000));
   const myRefRef = useRef(null);
   const playersRefRef = useRef(null);
@@ -232,11 +233,11 @@ function App() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const isTimeActive = () => {
+  const isTimeActive = useCallback(() => {
     return roomTimer && roomTimer.isActive && timeRemaining > 0;
-  };
+  }, [roomTimer, timeRemaining]);
 
-  const showResults = () => {
+  const showResults = useCallback(() => {
     if (!isRoomOwner || !currentRoom) return;
     
     // Marcar sessão como finalizada no Firebase para todos verem
@@ -247,7 +248,7 @@ function App() {
     });
     
     setShowResultsModal(true);
-  };
+  }, [isRoomOwner, currentRoom, playerName]);
 
   const startNewRound = () => {
     if (!isRoomOwner || !currentRoom) return;
@@ -912,28 +913,50 @@ function App() {
     };
   }, []);
 
-  // useEffect para detectar proximidade com o baú e tecla B
+  // Posição do pergaminho de resultados
+  const getScrollPosition = useCallback(() => {
+    const vw = window.innerWidth / 100;
+    const vh = window.innerHeight / 100;
+    return {
+      x: 85 * vw, // 85vw (lado direito)
+      y: 84 * vh  // 84vh (parte inferior)
+    };
+  }, []);
+
+  // useEffect para detectar proximidade com o baú e pergaminho
   useEffect(() => {
     if (!currentRoom) return;
 
     const chestPos = getChestPosition();
-    const distance = calculateDistance(position.x, position.y, chestPos.x, chestPos.y);
+    const scrollPos = getScrollPosition();
+    const chestDistance = calculateDistance(position.x, position.y, chestPos.x, chestPos.y);
+    const scrollDistance = calculateDistance(position.x, position.y, scrollPos.x, scrollPos.y);
     const proximityThreshold = 150; // pixels
 
     // Mostrar instrução apenas na primeira fase (antes das votações/resultados)
     const isInFirstPhase = !isVotingPhase && !votingFinished && !islandVotingPhase && !planningPhase && !sessionSummary;
-    const isNear = distance < proximityThreshold;
-    setShowChestHint(isInFirstPhase); // Sempre mostrar na primeira fase, independente da proximidade
+    const isChestNear = chestDistance < proximityThreshold;
+    const isScrollNear = scrollDistance < proximityThreshold;
+    
+    // Baú: mostrar apenas durante o timer ativo (primeira fase)
+    setShowChestHint(isInFirstPhase && isTimeActive());
+    
+    // Pergaminho: mostrar quando tempo acabou (para todos os usuários)
+    const canViewResults = !isTimeActive() && isRoomOwner && Object.keys(allCards).length > 0;
+    const timeEndedWithCards = !isTimeActive() && Object.keys(allCards).length > 0;
+    setShowScrollHint(timeEndedWithCards);
 
-    // Handler para tecla B - só funciona quando próximo
+    // Handler para tecla B (baú e pergaminho)
     const handleKeyPress = (e) => {
-      if (e.key.toLowerCase() === 'b' && isNear && isInFirstPhase) {
-        // Verificar se não está focado em um input
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-          return;
-        }
+      if (e.key.toLowerCase() === 'b' && !e.target.matches('input, textarea')) {
         e.preventDefault();
-        openChest(playerIdRef.current);
+        
+        // Priorizar pergaminho se ambos estiverem próximos e o pergaminho estiver ativo
+        if (isScrollNear && canViewResults) {
+          showResults();
+        } else if (isChestNear && isInFirstPhase) {
+          openChest(playerIdRef.current);
+        }
       }
     };
 
@@ -942,7 +965,7 @@ function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [currentRoom, position, calculateDistance, getChestPosition, openChest, isVotingPhase, votingFinished, islandVotingPhase, planningPhase, sessionSummary]);
+  }, [currentRoom, position, calculateDistance, getChestPosition, getScrollPosition, openChest, showResults, isVotingPhase, votingFinished, islandVotingPhase, planningPhase, sessionSummary, isRoomOwner, allCards, isTimeActive]);
 
   // Handler para clique na tela
   const handleClick = (e) => {
@@ -1025,12 +1048,6 @@ function App() {
                 <div className="timer-finished">
                   {isRoomOwner ? (
                     <div className="owner-options">
-                      <button 
-                        className="show-results-button" 
-                        onClick={showResults}
-                      >
-                        👁️ Ver Resultados
-                      </button>
                       <button 
                         className="new-round-button" 
                         onClick={startNewRound}
@@ -1153,6 +1170,44 @@ function App() {
                   }}
                 >
                   Chegue perto e pressione "B" para abrir ou clique no 📦
+                </div>
+              )}
+            </div>
+            
+            {/* Pergaminho de Resultados - FIXO */}
+            <div 
+              className={`results-scroll ${(!isTimeActive() && isRoomOwner && Object.keys(allCards).length > 0) ? 'active' : 'inactive'} ${!isRoomOwner ? 'participant-hint' : ''}`}
+              style={{
+                left: '85vw',
+                top: '84vh'
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isTimeActive() && isRoomOwner && Object.keys(allCards).length > 0) {
+                  showResults();
+                }
+              }}
+              title={
+                !isTimeActive() && isRoomOwner && Object.keys(allCards).length > 0 
+                  ? "Clique para ver os resultados" 
+                  : "Aguarde o tempo acabar para ver os resultados"
+              }
+            >
+              📜
+              
+              {/* Instrução de proximidade do pergaminho */}
+              {showScrollHint && (
+                <div 
+                  className={`scroll-proximity-hint ${!isRoomOwner ? 'participant-hint' : ''}`}
+                  style={{
+                    left: '2.5vw',
+                    top: '-10px'
+                  }}
+                >
+                  {isRoomOwner 
+                    ? "Pressione \"B\" para ver resultados 📜"
+                    : "Aguardando o dono da sala abrir o pergaminho para todos lerem 📜"
+                  }
                 </div>
               )}
             </div>
