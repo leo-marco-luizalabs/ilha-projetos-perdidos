@@ -36,11 +36,13 @@ function App() {
   const [playerCharacter, setPlayerCharacter] = useState({
     id: 'knight',
     name: 'Cavaleiro',
-    frontImage: '/src/assets/characters/knight-front.svg',
-    backImage: '/src/assets/characters/knight-back.svg',
+    frontImage: '/assets/characters/persona-1-front.png',
+    backImage: '/assets/characters/persona-1-back.png',
+    leftImage: '/assets/characters/one-perfil.png',
+    rightImage: '/assets/characters/one-front.png',
     color: '#3b82f6'
   });
-  const [playerView, setPlayerView] = useState('front'); // 'front' ou 'back'
+  const [playerView, setPlayerView] = useState('front'); // 'front', 'back', 'left', 'right'
   const [roomCode, setRoomCode] = useState('');
   const [showChest, setShowChest] = useState(false);
   const [chestCards, setChestCards] = useState([]);
@@ -525,11 +527,11 @@ function App() {
           break;
         case 'ArrowLeft':
           newPos.x = Math.max(0, currentPos.x - step);
-          // Mantém a visão atual para movimento lateral
+          newView = 'left';
           break;
         case 'ArrowRight':
           newPos.x = Math.min(window.innerWidth - 50, currentPos.x + step);
-          // Mantém a visão atual para movimento lateral
+          newView = 'right';
           break;
       }
 
@@ -864,7 +866,9 @@ function App() {
   // Handler para clique na tela
   const handleClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left - 25;
     const clickY = e.clientY - rect.top - 25;
+    const currentX = position.x;
     const currentY = position.y;
 
     const percentX = ((e.clientX - rect.left - 25 )/ window.innerWidth) * 100;
@@ -875,17 +879,31 @@ function App() {
       y: (window.innerHeight / 100) * percentY
     };
 
-    // debugger
-    
+    // Calcular diferenças para determinar direção principal
+    const deltaX = Math.abs(clickX - currentX);
+    const deltaY = Math.abs(clickY - currentY);
+
     // Determinar a direção do movimento e ajustar a visão
-    if (clickY < currentY) {
-      // Clicou acima = movendo para cima = mostrar costas
-      setPlayerView('back');
-    } else if (clickY > currentY) {
-      // Clicou abaixo = movendo para baixo = mostrar frente
-      setPlayerView('front');
+    // Se movimento horizontal é mais significativo que vertical
+    if (deltaX > deltaY) {
+      if (clickX < currentX) {
+        // Clicou à esquerda
+        setPlayerView('left');
+      } else {
+        // Clicou à direita
+        setPlayerView('right');
+      }
+    } else {
+      // Movimento vertical é mais significativo
+      if (clickY < currentY) {
+        // Clicou acima = movendo para cima = mostrar costas
+        setPlayerView('back');
+      } else if (clickY > currentY) {
+        // Clicou abaixo = movendo para baixo = mostrar frente
+        setPlayerView('front');
+      }
     }
-    // Se clicou na mesma altura (clickY === currentY), mantém a visão atual
+    // Se clicou na mesma posição (deltaX === deltaY === 0), mantém a visão atual
     
     setPosition(newPos);
   };
@@ -991,8 +1009,20 @@ function App() {
               onClick={(e) => handlePlayerClick(e, playerIdRef.current)}
             >
               <img 
-                src={playerView === 'front' ? playerCharacter.frontImage : playerCharacter.backImage}
-                alt={`${playerCharacter.name} - ${playerView === 'front' ? 'Frente' : 'Costas'}`}
+                src={
+                  playerView === 'front' ? playerCharacter.frontImage :
+                  playerView === 'back' ? playerCharacter.backImage :
+                  playerView === 'left' ? playerCharacter.leftImage :
+                  playerView === 'right' ? playerCharacter.rightImage :
+                  playerCharacter.frontImage // fallback
+                }
+                alt={`${playerCharacter.name} - ${
+                  playerView === 'front' ? 'Frente' :
+                  playerView === 'back' ? 'Costas' :
+                  playerView === 'left' ? 'Esquerda' :
+                  playerView === 'right' ? 'Direita' :
+                  'Frente'
+                }`}
                 className="character-image"
                 onError={(e) => {
                   // Fallback para cor sólida se a imagem não carregar
@@ -1034,8 +1064,20 @@ function App() {
               >
                 {playerData.character ? (
                   <img 
-                    src={playerData.view === 'back' ? playerData.character.backImage : playerData.character.frontImage}
-                    alt={`${playerData.character.name} - ${playerData.view === 'back' ? 'Costas' : 'Frente'}`}
+                    src={
+                      playerData.view === 'front' ? playerData.character.frontImage :
+                      playerData.view === 'back' ? playerData.character.backImage :
+                      playerData.view === 'left' ? playerData.character.leftImage :
+                      playerData.view === 'right' ? playerData.character.rightImage :
+                      playerData.character.frontImage // fallback
+                    }
+                    alt={`${playerData.character.name} - ${
+                      playerData.view === 'front' ? 'Frente' :
+                      playerData.view === 'back' ? 'Costas' :
+                      playerData.view === 'left' ? 'Esquerda' :
+                      playerData.view === 'right' ? 'Direita' :
+                      'Frente'
+                    }`}
                     className="character-image"
                     onError={(e) => {
                       // Fallback para cor sólida se a imagem não carregar
