@@ -94,9 +94,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                           e.target.parentElement.style.backgroundColor = selectedCharacter.color;
                         }}
                       />
-                      <span className="preview-label">{selectedCharacter.name}</span>
                     </div>
-                    <span className="character-name">{selectedCharacter.name}</span>
                     <div className="character-indicators">
                       {availableCharacters.map((_, index) => (
                         <div
@@ -177,9 +175,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
                           e.target.parentElement.style.backgroundColor = selectedCharacter.color;
                         }}
                       />
-                      <span className="preview-label">{selectedCharacter.name}</span>
                     </div>
-                    <span className="character-name">{selectedCharacter.name}</span>
                     <div className="character-indicators">
                       {availableCharacters.map((_, index) => (
                         <div

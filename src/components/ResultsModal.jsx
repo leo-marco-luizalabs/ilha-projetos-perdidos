@@ -657,6 +657,7 @@ const ResultsModal = ({
         ...card,
         voteCount: islandVoteCounts[card.id] || 0
       }))
+      .filter(card => card.voteCount > 0) // Filtrar apenas cards com pelo menos 1 voto
       .sort((a, b) => b.voteCount - a.voteCount)
       .slice(0, Math.min(3, islandCards.length)); // Top 3 ou menos
 
@@ -665,8 +666,14 @@ const ResultsModal = ({
         <h2>📋 Planejamento</h2>
         <p>Agora vamos planejar as ações para os cards mais votados:</p>
 
-        <div className="planning-cards">
-          {topIslandCards.map((card, index) => (
+        {topIslandCards.length === 0 ? (
+          <div className="no-voted-cards">
+            <p>🤔 Nenhum card recebeu votos na votação da ilha.</p>
+            <p>Não há planos de ação para criar nesta sessão.</p>
+          </div>
+        ) : (
+          <div className="planning-cards">
+            {topIslandCards.map((card, index) => (
             <div key={card.id} className="planning-card">
               <div className="card-header">
                 <h3>#{index + 1} - {card.voteCount} votos</h3>
@@ -727,9 +734,10 @@ const ResultsModal = ({
               )}
             </div>
           ))}
-        </div>
+          </div>
+        )}
 
-        {isOwner && (
+        {isOwner && topIslandCards.length > 0 && (
           <div className="planning-actions">
             <button 
               className="btn btn-success"
@@ -782,6 +790,7 @@ const ResultsModal = ({
         ...card,
         voteCount: islandVoteCounts[card.id] || 0
       }))
+      .filter(card => card.voteCount > 0) // Filtrar apenas cards com pelo menos 1 voto
       .sort((a, b) => b.voteCount - a.voteCount)
       .slice(0, Math.min(3, islandCards.length)); // Top 3 ou menos
 
@@ -790,99 +799,106 @@ const ResultsModal = ({
         <h2>📋 Resumo da Sessão</h2>
         <p>Aqui está o resumo completo da sua retrospectiva:</p>
 
-        {/* Resumo dos Planos de Ação - MOVIDO PARA O TOPO */}
-        {topIslandCards.length > 0 && (
-          <div className="action-plans-summary-card">
-            <h3>🎯 Resumo dos Planos de Ação</h3>
-            <p>Principais pontos identificados e suas ações planejadas:</p>
+        {topIslandCards.length === 0 ? (
+          <div className="no-voted-cards">
+            <p>🤔 Nenhum card recebeu votos na votação da ilha.</p>
+            <p>Esta retrospectiva não gerou planos de ação específicos.</p>
+          </div>
+        ) : (
+          <>
+            {/* Resumo dos Planos de Ação - MOVIDO PARA O TOPO */}
+            <div className="action-plans-summary-card">
+              <h3>🎯 Resumo dos Planos de Ação</h3>
+              <p>Principais pontos identificados e suas ações planejadas:</p>
             
-            <div className="unified-planning-card">
-              {/* Resumo Inteligente - MOVIDO PARA O TOPO */}
-              <div className="ai-summary-section">
-                <div className="ai-header">
-                  <h4>🤖 Resumo Inteligente</h4>
-                  {!aiSummary && !isLoadingAI && !aiError && (
-                    <button 
-                      className="generate-ai-button"
-                      onClick={() => generateAISummary(topIslandCards)}
-                      disabled={!isOpenAIConfigured()}
-                    >
-                      {!isOpenAIConfigured() ? 'Configurar ChatGPT' : '🤖 Gerar Resumo ChatGPT'}
-                    </button>
-                  )}
-                </div>
-                
-                <div className="ai-summary-content">
-                  {isLoadingAI && (
-                    <div className="ai-loading">
-                      <div className="loading-spinner"></div>
-                      <p>Gerando resumo inteligente...</p>
-                    </div>
-                  )}
-                  
-                  {aiError && (
-                    <div className="ai-error">
-                      <p>❌ {aiError}</p>
+              <div className="unified-planning-card">
+                {/* Resumo Inteligente - MOVIDO PARA O TOPO */}
+                <div className="ai-summary-section">
+                  <div className="ai-header">
+                    <h4>🤖 Resumo Inteligente</h4>
+                    {!aiSummary && !isLoadingAI && !aiError && (
                       <button 
-                        className="retry-button"
+                        className="generate-ai-button"
                         onClick={() => generateAISummary(topIslandCards)}
+                        disabled={!isOpenAIConfigured()}
                       >
-                        Tentar Novamente
+                        {!isOpenAIConfigured() ? 'Configurar ChatGPT' : '🤖 Gerar Resumo ChatGPT'}
                       </button>
-                    </div>
-                  )}
-                  
-                  {aiSummary && (
-                    <div className="ai-result">
-                      <p>{aiSummary}</p>
-                      <button 
-                        className="regenerate-button"
-                        onClick={() => generateAISummary(topIslandCards)}
-                        disabled={isLoadingAI}
-                      >
-                        🔄 Gerar Novo Resumo
-                      </button>
-                    </div>
-                  )}
-                  
-                  {!aiSummary && !isLoadingAI && !aiError && (
-                    <div className="ai-summary-placeholder">
-                      <p>
-                        {!isOpenAIConfigured() 
-                          ? 'Configure sua chave da API do ChatGPT no arquivo .env para gerar resumos inteligentes com IA!'
-                          : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação usando ChatGPT.'
-                        }
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Detalhamento dos planos */}
-              <div className="planning-items-list">
-                {topIslandCards.map((card, index) => (
-                  <div key={card.id} className="planning-item-summary">
-                    <div className="item-header">
-                      <span className="item-number">#{index + 1}</span>
-                      <span className="item-votes">{card.voteCount} votos</span>
-                    </div>
-                    <div className="item-content">
-                      <p className="item-text"><strong>Questão:</strong> {card.text}</p>
-                      {planningForms[card.id] ? (
-                        <div className="item-plan">
-                          <p><strong>Ação:</strong> {planningForms[card.id].action || 'Não definido'}</p>
-                          <p><strong>Responsável:</strong> {planningForms[card.id].responsible || 'Não definido'}</p>
-                          <p><strong>Prazo:</strong> {planningForms[card.id].deadline || 'Não definido'}</p>
-                        </div>
-                      ) : (
-                        <p className="no-plan">Plano não foi definido para este item.</p>
-                      )}
-                    </div>
+                    )}
                   </div>
-                ))}
+                  
+                  <div className="ai-summary-content">
+                    {isLoadingAI && (
+                      <div className="ai-loading">
+                        <div className="loading-spinner"></div>
+                        <p>Gerando resumo inteligente...</p>
+                      </div>
+                    )}
+                    
+                    {aiError && (
+                      <div className="ai-error">
+                        <p>❌ {aiError}</p>
+                        <button 
+                          className="retry-button"
+                          onClick={() => generateAISummary(topIslandCards)}
+                        >
+                          Tentar Novamente
+                        </button>
+                      </div>
+                    )}
+                    
+                    {aiSummary && (
+                      <div className="ai-result">
+                        <p>{aiSummary}</p>
+                        <button 
+                          className="regenerate-button"
+                          onClick={() => generateAISummary(topIslandCards)}
+                          disabled={isLoadingAI}
+                        >
+                          🔄 Gerar Novo Resumo
+                        </button>
+                      </div>
+                    )}
+                    
+                    {!aiSummary && !isLoadingAI && !aiError && (
+                      <div className="ai-summary-placeholder">
+                        <p>
+                          {!isOpenAIConfigured() 
+                            ? 'Configure sua chave da API do ChatGPT no arquivo .env para gerar resumos inteligentes com IA!'
+                            : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação usando ChatGPT.'
+                          }
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Detalhamento dos planos */}
+                <div className="planning-items-list">
+                  {topIslandCards.map((card, index) => (
+                    <div key={card.id} className="planning-item-summary">
+                      <div className="item-header">
+                        <span className="item-number">#{index + 1}</span>
+                        <span className="item-votes">{card.voteCount} votos</span>
+                      </div>
+                      <div className="item-content">
+                        <p className="item-text"><strong>Questão:</strong> {card.text}</p>
+                        {planningForms[card.id] ? (
+                          <div className="item-plan">
+                            <p><strong>Ação:</strong> {planningForms[card.id].action || 'Não definido'}</p>
+                            <p><strong>Responsável:</strong> {planningForms[card.id].responsible || 'Não definido'}</p>
+                            <p><strong>Prazo:</strong> {planningForms[card.id].deadline || 'Não definido'}</p>
+                          </div>
+                        ) : (
+                          <p className="no-plan">Plano não foi definido para este item.</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
 
         {/* Resumo das categorias */}

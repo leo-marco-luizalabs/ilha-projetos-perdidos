@@ -210,7 +210,7 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  min-width: 120px;
+  /* min-width: 120px; */
 }
 
 .character-preview {
@@ -338,36 +338,20 @@
 }
 
 .player-preview.large {
-  width: 80px;
+  /* width: 80px; */
   height: 80px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  /* color: white; */
   font-weight: bold;
   font-size: 14px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  border: 3px solid #333;
+  /* border: 3px solid #333; */
   position: relative;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.player-preview.large::after {
-  content: '👑';
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  font-size: 18px;
-  background: white;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #333;
+  /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); */
 }
 
 .color-name {
