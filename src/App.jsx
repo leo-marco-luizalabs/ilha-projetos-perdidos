@@ -967,53 +967,7 @@ function App() {
     };
   }, [currentRoom, position, calculateDistance, getChestPosition, getScrollPosition, openChest, showResults, isVotingPhase, votingFinished, islandVotingPhase, planningPhase, sessionSummary, isRoomOwner, allCards, isTimeActive]);
 
-  // Handler para clique na tela
-  const handleClick = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left - 25;
-    const clickY = e.clientY - rect.top - 25;
-    const currentX = position.x;
-    const currentY = position.y;
-
-    const percentX = ((e.clientX - rect.left - 25 )/ window.innerWidth) * 100;
-    const percentY = (clickY / window.innerHeight) * 100;
-
-    const newPos = {
-      x: (window.innerWidth / 100) * percentX,
-      y: (window.innerHeight / 100) * percentY
-    };
-
-    // Calcular diferenças para determinar direção principal
-    const deltaX = Math.abs(clickX - currentX);
-    const deltaY = Math.abs(clickY - currentY);
-
-    // Determinar a direção do movimento e ajustar a visão
-    // Se movimento horizontal é mais significativo que vertical
-    if (deltaX > deltaY) {
-      if (clickX < currentX) {
-        // Clicou à esquerda
-        setPlayerView('left');
-      } else {
-        // Clicou à direita
-        setPlayerView('right');
-      }
-    } else {
-      // Movimento vertical é mais significativo
-      if (clickY < currentY) {
-        // Clicou acima = movendo para cima = mostrar costas
-        setPlayerView('back');
-      } else if (clickY > currentY) {
-        // Clicou abaixo = movendo para baixo = mostrar frente
-        setPlayerView('front');
-      }
-    }
-    // Se clicou na mesma posição (deltaX === deltaY === 0), mantém a visão atual
-    
-    setPosition(newPos);
-    
-    // Ativar animação de caminhada também no clique
-    startWalkingAnimation();
-  };
+  // NOTE: click-to-move removed — movement only via keyboard arrows
 
   return (
     <>
@@ -1024,7 +978,7 @@ function App() {
         />
       ) : (
         <>
-        <div className="game-container" onClick={handleClick}>
+  <div className="game-container">
           {/* Header da sala */}
           <div className="room-header">
             <div className="room-info">
@@ -1104,6 +1058,13 @@ function App() {
               </button>
             </div>
           </div>
+
+          {/* Banner: mensagem para participantes enquanto o timer não foi iniciado */}
+          {!isRoomOwner && (!roomTimer || !roomTimer.isActive) && !isVotingPhase && !votingFinished && !islandVotingPhase && !planningPhase && !sessionSummary && (
+            <div className="waiting-banner">
+              Aguardando o dono da sala iniciar o jogo
+            </div>
+          )}
 
           {/* Mundo do jogo */}
           <div className="game-world">

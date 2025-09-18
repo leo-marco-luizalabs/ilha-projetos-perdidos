@@ -34,9 +34,9 @@ const InstructionsModal = ({ isOpen, onClose }) => {
 
             <div className="step">
               <h4>2. 🎪 Exploração da Ilha</h4>
-              <p>• Use as <strong>setas do teclado</strong> ou <strong>clique na tela</strong> para mover seu personagem</p>
+              <p>• Use as <strong>setas do teclado</strong> para mover seu personagem (movimento por clique foi desativado)</p>
               <p>• Explore a ilha e veja outros jogadores em tempo real</p>
-              <p>• Clique no seu baú para adicionar cards de retrospectiva</p>
+              <p>• Abra seu baú pressionando <strong>B</strong> quando estiver próximo, ou clicando no ícone do seu baú</p>
             </div>
 
             <div className="step">
@@ -92,12 +92,12 @@ const InstructionsModal = ({ isOpen, onClose }) => {
                 <span>Mover personagem com setas do teclado</span>
               </div>
               <div className="control-item">
-                <span className="key">🖱️ Click</span>
-                <span>Clicar na tela para mover para o local</span>
+                <span className="key">B</span>
+                <span>Abrir baú quando estiver próximo (atalho)</span>
               </div>
               <div className="control-item">
                 <span className="key">📦 Baú</span>
-                <span>Clicar no baú para gerenciar cards</span>
+                <span>Clicar no ícone do seu baú para gerenciar cards (apenas seu baú)</span>
               </div>
             </div>
           </div>
