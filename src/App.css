@@ -308,6 +308,59 @@ body {
   transform: translateY(0);
 }
 
+.emoji-toolbar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.emoji-btn {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.emoji-btn:hover { transform: translateY(-2px); }
+
+.emoji-bubble {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255,255,255,0.9);
+  padding: 6px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.06);
+  font-size: 18px;
+  transform: translate(-50%, 0);
+  animation: floatUp 2s ease-out forwards;
+  z-index: 2000; /* garantir que fique acima de avatares e labels */
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -40px) scale(1.1); }
+}
+
+.emoji-bottom-bar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 18px;
+  z-index: 1200;
+  background: rgba(255,255,255,0.9);
+  padding: 8px 12px;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+@media (max-width: 480px) {
+  .emoji-bottom-bar { bottom: 12px; padding: 6px 10px; }
+  .emoji-btn { font-size: 18px; padding: 6px; }
+}
+
 /* Responsividade para o header */
 @media (max-width: 768px) {
   .room-header {
@@ -374,7 +427,8 @@ body {
   cursor: pointer;
   /* border: 2px solid rgba(255, 255, 255, 0.3); */
   position: relative;
-  /* overflow: hidden; */
+  overflow: visible; /* permitir que bolhas fiquem visíveis acima */
+  z-index: 5;
 }
 
 .player.character-player {

@@ -29,6 +29,7 @@ const db = firebase.database();
 
 
 function App() {
+  const EMOJIS = ['❤️','👍','👎','🙂','😢','😠'];
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [otherPlayers, setOtherPlayers] = useState({});
   const [currentRoom, setCurrentRoom] = useState(null);
@@ -73,7 +74,9 @@ function App() {
   const [showInstructions, setShowInstructions] = useState(false);
   const [showChestHint, setShowChestHint] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(false);
+  const [emojiBubbles, setEmojiBubbles] = useState({});
   const playerIdRef = useRef("player_" + Math.floor(Math.random() * 10000));
+  const emojisRefRef = useRef(null);
   const myRefRef = useRef(null);
   const playersRefRef = useRef(null);
   const chestRefRef = useRef(null);
@@ -198,6 +201,23 @@ function App() {
       // Feedback visual
       alert(`Código copiado: ${roomCode}`);
     }
+  };
+
+  // Enviar emoji para a sala (salva no Realtime DB)
+  const sendEmoji = (emoji) => {
+    if (!currentRoom || !playerIdRef.current) return;
+
+    const emojiData = {
+      id: Date.now(),
+      playerId: playerIdRef.current,
+      emoji,
+      x: position.x,
+      y: position.y,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    const ref = db.ref(`rooms/${currentRoom}/emojis`);
+    ref.push(emojiData);
   };
 
   // Funções para gerenciar timer
@@ -618,6 +638,22 @@ function App() {
       setAllCards(allChests);
     });
 
+    // Escutar emojis da sala
+    emojisRefRef.current = db.ref(`rooms/${currentRoom}/emojis`);
+    emojisRefRef.current.on('value', (snapshot) => {
+      const data = snapshot.val() || {};
+      // Converte para array e ordena por createdAt
+      const emojisArr = Object.keys(data).map(key => ({ key, ...(data[key]) }));
+      const now = Date.now();
+      // Mostrar apenas emojis enviados nos últimos 5 segundos
+      const recent = emojisArr.filter(e => {
+        if (!e.createdAt) return true;
+        const created = typeof e.createdAt === 'number' ? e.createdAt : now;
+        return (now - created) <= 5000;
+      });
+      setEmojiBubbles(recent);
+    });
+
     // Escutar timer da sala
     roomTimerRefRef.current = db.ref(`rooms/${currentRoom}/timer`);
     roomTimerRefRef.current.on('value', (snapshot) => {
@@ -875,6 +911,9 @@ function App() {
       if (sessionSummaryRefRef.current) {
         sessionSummaryRefRef.current.off();
       }
+      if (emojisRefRef.current) {
+        emojisRefRef.current.off();
+      }
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
       }
@@ -1052,6 +1091,7 @@ function App() {
               >
                 📚 Instruções
               </button>
+              {/* Emoji toolbar moved to bottom bar */}
               
               <button className="leave-button" onClick={handleLeaveRoom}>
                 🚪 Sair da Sala
@@ -1102,6 +1142,12 @@ function App() {
                 }}
               />
               <span className="player-label">Você</span>
+              {/* Emoji bubbles for self */}
+              {Array.isArray(emojiBubbles) && emojiBubbles.map(item => (
+                item.playerId === playerIdRef.current && (
+                  <div key={item.key} className="emoji-bubble" style={{ left: `${item.x - position.x + 20}px`, top: `${-40}px` }}>{item.emoji}</div>
+                )
+              ))}
             </div>
             
             {/* Baú do jogador atual - FIXO */}
@@ -1209,6 +1255,12 @@ function App() {
                   />
                 ) : null}
                 <span className="player-label">{playerData.name || id}</span>
+                {/* Emoji bubbles for other players */}
+                {Array.isArray(emojiBubbles) && emojiBubbles.map(item => (
+                  item.playerId === id && (
+                    <div key={item.key} className="emoji-bubble" style={{ left: `${item.x - playerData.x + 20}px`, top: `${-40}px` }}>{item.emoji}</div>
+                  )
+                ))}
               </div>
             </div>
           ))}
@@ -1231,6 +1283,19 @@ function App() {
           isOwner={selectedChestOwner === playerIdRef.current}
           canAddCards={isTimeActive()}
         />
+      )}
+
+      {/* Emoji bottom bar - fixed */}
+      {currentRoom && (
+        <div className="emoji-bottom-bar">
+          <div className="emoji-toolbar">
+            {EMOJIS.map((emj) => (
+              <button key={emj} className="emoji-btn" onClick={() => sendEmoji(emj)} title={`Enviar ${emj}`}>
+                {emj}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Modal do Timer */}
