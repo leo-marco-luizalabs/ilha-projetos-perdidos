@@ -4,7 +4,6 @@ dist
 .git
 .gitignore
 Dockerfile
-docker/
 *.log
 .env
 .env.local
