@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './TimerModal.css';
 
 function TimerModal({ isOpen, onClose, onStartTimer }) {
   const [selectedMinutes, setSelectedMinutes] = useState(5);
   const [customMinutes, setCustomMinutes] = useState('');
   const [useCustom, setUseCustom] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        onClose && onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

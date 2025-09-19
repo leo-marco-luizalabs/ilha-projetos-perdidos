@@ -32,6 +32,20 @@ const ResultsModal = ({
   rawVotingData,
   votingDataTimestamp
 }) => {
+  // Fecha o modal com a tecla Escape quando aberto
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        onClose && onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const [currentPhase, setCurrentPhase] = useState('results'); // 'results', 'island-voting', 'planning', 'summary'
   const [planningForms, setPlanningForms] = useState({});
   
