@@ -823,7 +823,8 @@ function App() {
           color: playerColor,
           character: playerCharacter,
           view: playerView,
-          lastSeen: firebase.database.ServerValue.TIMESTAMP
+          lastSeen: firebase.database.ServerValue.TIMESTAMP,
+          visible: true
         });
       }
     };
@@ -865,26 +866,42 @@ function App() {
       }
     };
 
-    // Eventos para detectar quando o usuário sai da página
+    // Eventos para detectar quando o usuário sai da página ou troca de aba
+    // Quando o usuário apenas troca de aba (visibilitychange) NÃO removemos o jogador;
+    // apenas atualizamos um flag `visible` para que outros clientes possam mostrar estado "oculto".
     const handleBeforeUnload = () => {
       removePlayer();
     };
 
     const handleVisibilityChange = () => {
-      if (document.hidden) {
-        removePlayer();
+      if (!myRefRef.current) return;
+      try {
+        const visible = !document.hidden;
+        myRefRef.current.update({
+          visible,
+          lastSeen: firebase.database.ServerValue.TIMESTAMP
+        });
+      } catch {
+        // ignore
       }
+    };
+
+    // pagehide é chamado em navegacao/fechamento/refresh e é mais confiavel para "leaving"
+    const handlePageHide = () => {
+      removePlayer();
     };
 
     // Adicionar listeners
     window.addEventListener('beforeunload', handleBeforeUnload);
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', handlePageHide);
 
     // Cleanup ao desmontar componente
     return () => {
       // Remover listeners
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  window.removeEventListener('pagehide', handlePageHide);
       
       // Cleanup do Firebase
       if (playersRefRef.current) {
@@ -1228,7 +1245,9 @@ function App() {
                 style={{
                   left: `${playerData.x}px`,
                   top: `${playerData.y}px`,
-                  backgroundColor: (playerData.character?.color || playerData.color) || '#6b7280'
+                  backgroundColor: (playerData.character?.color || playerData.color) || '#6b7280',
+                  opacity: playerData.visible === false ? 0.35 : 1,
+                  pointerEvents: playerData.visible === false ? 'none' : 'auto'
                 }}
               >
                 {playerData.character ? (
