@@ -7,6 +7,7 @@ import TimerModal from './components/TimerModal';
 import ResultsModal from './components/ResultsModal';
 import InstructionsModal from './components/InstructionsModal';
 import { availableCharacters } from './utils';
+import { generateActionPlanSummary, isOpenAIConfigured } from './services/openaiService';
 import './App.css';
 
 // Configuração do Firebase
@@ -367,6 +368,50 @@ function App() {
       finalizedBy: playerName,
       gameCode: roomCode
     });
+  };
+
+  // Função para salvar resumo IA no Firebase (compartilhado)
+  const saveAISummary = (summary, isLoading = false, error = null) => {
+    if (!currentRoom) return;
+    
+    const aiData = {
+      content: summary,
+      generatedAt: firebase.database.ServerValue.TIMESTAMP,
+      generatedBy: playerName,
+      isLoading,
+      error
+    };
+    
+    db.ref(`rooms/${currentRoom}/sessionSummary/aiSummary`).set(aiData);
+  };
+
+  // Função para gerar resumo IA compartilhado
+  const generateSharedAISummary = async (topCards, planningForms) => {
+    if (!isRoomOwner || !currentRoom) return;
+    
+    if (!isOpenAIConfigured()) {
+      saveAISummary(null, false, 'Chave da API do ChatGPT não configurada. Configure VITE_OPENAI_API_KEY no arquivo .env');
+      return;
+    }
+
+    // Marcar como carregando
+    saveAISummary(null, true, null);
+
+    try {
+      // Preparar dados dos planos para a IA
+      const plansData = topCards.map(card => ({
+        text: card.text,
+        voteCount: card.voteCount,
+        action: planningForms[card.id]?.action || null,
+        responsible: planningForms[card.id]?.responsible || null,
+        deadline: planningForms[card.id]?.deadline || null
+      }));
+
+      const summary = await generateActionPlanSummary(plansData);
+      saveAISummary(summary, false, null);
+    } catch (error) {
+      saveAISummary(null, false, error.message);
+    }
   };
 
   // Funções para gerenciar votação
@@ -1353,6 +1398,7 @@ function App() {
           cardPlans={cardPlans}
           sessionSummary={sessionSummary}
           finalizePlanning={finalizePlanning}
+          generateSharedAISummary={generateSharedAISummary}
           otherPlayers={otherPlayers}
           userId={playerIdRef.current}
           rawVotingData={rawVotingData}

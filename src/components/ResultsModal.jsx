@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './ResultsModal.css';
-import { generateActionPlanSummary, isOpenAIConfigured } from '../services/openaiService';
 
 const ResultsModal = ({ 
   isOpen, 
@@ -27,6 +26,7 @@ const ResultsModal = ({
   cardPlans,
   sessionSummary,
   finalizePlanning,
+  generateSharedAISummary,
   otherPlayers,
   userId,
   rawVotingData,
@@ -48,11 +48,6 @@ const ResultsModal = ({
 
   const [currentPhase, setCurrentPhase] = useState('results'); // 'results', 'island-voting', 'planning', 'summary'
   const [planningForms, setPlanningForms] = useState({});
-  
-  // Estados para resumo da IA
-  const [aiSummary, setAiSummary] = useState('');
-  const [isLoadingAI, setIsLoadingAI] = useState(false);
-  const [aiError, setAiError] = useState(null);
 
   // Calcular status de votação dos jogadores
   const calculatePlayersStatus = () => {
@@ -180,12 +175,6 @@ const ResultsModal = ({
       setCurrentPhase('results');
     }
   }, [sessionSummary, planningPhase, islandVotingPhase]);
-
-  // Limpar resumo da IA quando os planos mudarem
-  useEffect(() => {
-    setAiSummary('');
-    setAiError(null);
-  }, [planningForms, cardPlans]);
 
   // Sincronizar formulários de planejamento com o Firebase
   React.useEffect(() => {
@@ -765,35 +754,6 @@ const ResultsModal = ({
     );
   };
 
-  // Função para gerar resumo da IA
-  const generateAISummary = async (topCards) => {
-    if (!isOpenAIConfigured()) {
-      setAiError('Chave da API do ChatGPT não configurada. Configure VITE_OPENAI_API_KEY no arquivo .env');
-      return;
-    }
-
-    setIsLoadingAI(true);
-    setAiError(null);
-
-    try {
-      // Preparar dados dos planos para a IA
-      const plansData = topCards.map(card => ({
-        text: card.text,
-        voteCount: card.voteCount,
-        action: planningForms[card.id]?.action || null,
-        responsible: planningForms[card.id]?.responsible || null,
-        deadline: planningForms[card.id]?.deadline || null
-      }));
-
-      const summary = await generateActionPlanSummary(plansData);
-      setAiSummary(summary);
-    } catch (error) {
-      setAiError(error.message);
-    } finally {
-      setIsLoadingAI(false);
-    }
-  };
-
   const renderSummary = () => {
     // Pegar os cards que foram categorizados como "melhorar"
     const islandCards = categories.melhorar;
@@ -830,56 +790,59 @@ const ResultsModal = ({
                 <div className="ai-summary-section">
                   <div className="ai-header">
                     <h4>🤖 Resumo Inteligente</h4>
-                    {!aiSummary && !isLoadingAI && !aiError && (
+                    {isOwner && !sessionSummary?.aiSummary?.content && !sessionSummary?.aiSummary?.isLoading && !sessionSummary?.aiSummary?.error && (
                       <button 
                         className="generate-ai-button"
-                        onClick={() => generateAISummary(topIslandCards)}
-                        disabled={!isOpenAIConfigured()}
+                        onClick={() => generateSharedAISummary(topIslandCards, planningForms)}
                       >
-                        {!isOpenAIConfigured() ? 'Configurar ChatGPT' : '🤖 Gerar Resumo ChatGPT'}
+                        🤖 Gerar Resumo ChatGPT
                       </button>
                     )}
                   </div>
                   
                   <div className="ai-summary-content">
-                    {isLoadingAI && (
+                    {sessionSummary?.aiSummary?.isLoading && (
                       <div className="ai-loading">
                         <div className="loading-spinner"></div>
                         <p>Gerando resumo inteligente...</p>
                       </div>
                     )}
                     
-                    {aiError && (
+                    {sessionSummary?.aiSummary?.error && (
                       <div className="ai-error">
-                        <p>❌ {aiError}</p>
-                        <button 
-                          className="retry-button"
-                          onClick={() => generateAISummary(topIslandCards)}
-                        >
-                          Tentar Novamente
-                        </button>
+                        <p>❌ {sessionSummary.aiSummary.error}</p>
+                        {isOwner && (
+                          <button 
+                            className="retry-button"
+                            onClick={() => generateSharedAISummary(topIslandCards, planningForms)}
+                          >
+                            Tentar Novamente
+                          </button>
+                        )}
                       </div>
                     )}
                     
-                    {aiSummary && (
+                    {sessionSummary?.aiSummary?.content && (
                       <div className="ai-result">
-                        <p>{aiSummary}</p>
-                        <button 
-                          className="regenerate-button"
-                          onClick={() => generateAISummary(topIslandCards)}
-                          disabled={isLoadingAI}
-                        >
-                          🔄 Gerar Novo Resumo
-                        </button>
+                        <p>{sessionSummary.aiSummary.content}</p>
+                        {isOwner && (
+                          <button 
+                            className="regenerate-button"
+                            onClick={() => generateSharedAISummary(topIslandCards, planningForms)}
+                            disabled={sessionSummary?.aiSummary?.isLoading}
+                          >
+                            🔄 Gerar Novo Resumo
+                          </button>
+                        )}
                       </div>
                     )}
                     
-                    {!aiSummary && !isLoadingAI && !aiError && (
+                    {!sessionSummary?.aiSummary?.content && !sessionSummary?.aiSummary?.isLoading && !sessionSummary?.aiSummary?.error && (
                       <div className="ai-summary-placeholder">
                         <p>
-                          {!isOpenAIConfigured() 
-                            ? 'Configure sua chave da API do ChatGPT no arquivo .env para gerar resumos inteligentes com IA!'
-                            : 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação usando ChatGPT.'
+                          {isOwner 
+                            ? 'Clique no botão acima para gerar um resumo inteligente dos seus planos de ação usando ChatGPT.'
+                            : 'Aguardando o dono da sala gerar o resumo inteligente...'
                           }
                         </p>
                       </div>
