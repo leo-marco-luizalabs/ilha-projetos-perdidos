@@ -145,6 +145,57 @@ body {
   gap: 10px;
 }
 
+.timer-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timer-main-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.timer-extra-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.extra-time-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.add-time-button {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.7rem;
+  transition: all 0.2s ease;
+  min-width: 45px;
+}
+
+.add-time-button:hover {
+  background: #138496;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(23, 162, 184, 0.3);
+}
+
+.add-time-button:active {
+  transform: translateY(0);
+}
+
 .timer-display {
   background: #ff6b6b;
   color: white;
@@ -156,9 +207,58 @@ body {
   animation: timerPulse 1s infinite;
 }
 
+.pause-indicator {
+  color: #ffc107;
+  font-weight: bold;
+  animation: pauseBlink 1s infinite;
+}
+
+.extra-time-indicator {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+
+@keyframes pauseBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 @keyframes timerPulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+.pause-timer-button {
+  background: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.8rem;
+  transition: background 0.3s ease;
+}
+
+.pause-timer-button:hover {
+  background: #e0a800;
+}
+
+.resume-timer-button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.8rem;
+  transition: background 0.3s ease;
+}
+
+.resume-timer-button:hover {
+  background: #218838;
 }
 
 .stop-timer-button {

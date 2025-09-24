@@ -230,12 +230,57 @@ function App() {
       endTime,
       duration: minutes,
       isActive: true,
+      isPaused: false,
+      pausedAt: null,
+      totalPausedTime: 0,
       startedBy: playerName,
       startedAt: firebase.database.ServerValue.TIMESTAMP
     };
     
     db.ref(`rooms/${currentRoom}/timer`).set(timerData);
     setShowTimerModal(false);
+  };
+
+  const pauseTimer = () => {
+    if (!isRoomOwner || !currentRoom || !roomTimer) return;
+    
+    const now = Date.now();
+    db.ref(`rooms/${currentRoom}/timer`).update({
+      isPaused: true,
+      pausedAt: now,
+      pausedBy: playerName,
+      pausedTimestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+  };
+
+  const resumeTimer = () => {
+    if (!isRoomOwner || !currentRoom || !roomTimer) return;
+    
+    const now = Date.now();
+    const pauseDuration = now - roomTimer.pausedAt;
+    const newTotalPausedTime = (roomTimer.totalPausedTime || 0) + pauseDuration;
+    
+    db.ref(`rooms/${currentRoom}/timer`).update({
+      isPaused: false,
+      pausedAt: null,
+      totalPausedTime: newTotalPausedTime,
+      resumedBy: playerName,
+      resumedTimestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+  };
+
+  const addExtraTime = (minutes) => {
+    if (!isRoomOwner || !currentRoom || !roomTimer || !roomTimer.isActive) return;
+    
+    const extraTimeMs = minutes * 60 * 1000;
+    const newEndTime = roomTimer.endTime + extraTimeMs;
+    
+    db.ref(`rooms/${currentRoom}/timer`).update({
+      endTime: newEndTime,
+      extraTimeAdded: (roomTimer.extraTimeAdded || 0) + minutes,
+      lastExtraTimeBy: playerName,
+      lastExtraTimeAt: firebase.database.ServerValue.TIMESTAMP
+    });
   };
 
   const stopTimer = () => {
@@ -256,6 +301,10 @@ function App() {
 
   const isTimeActive = useCallback(() => {
     return roomTimer && roomTimer.isActive && timeRemaining > 0;
+  }, [roomTimer, timeRemaining]);
+
+  const canAddCards = useCallback(() => {
+    return roomTimer && roomTimer.isActive && timeRemaining > 0 && !roomTimer.isPaused;
   }, [roomTimer, timeRemaining]);
 
   const showResults = useCallback(() => {
@@ -510,9 +559,13 @@ function App() {
   const addCard = (text) => {
     if (!selectedChestOwner || !text.trim()) return;
     
-    // Verificar se o tempo está ativo antes de permitir adicionar cards
-    if (!isTimeActive()) {
-      alert('⏰ O tempo para adicionar cards não está ativo ou já acabou!');
+    // Verificar se é possível adicionar cards (tempo ativo e não pausado)
+    if (!canAddCards()) {
+      if (roomTimer && roomTimer.isPaused) {
+        alert('⏸️ O timer está pausado! Não é possível adicionar cards agora.');
+      } else {
+        alert('⏰ O tempo para adicionar cards não está ativo ou já acabou!');
+      }
       return;
     }
     
@@ -706,10 +759,22 @@ function App() {
       setRoomTimer(timer);
       
       if (timer && timer.isActive && timer.endTime) {
-        // Calcular tempo restante
+        // Calcular tempo restante considerando pausas
         const updateTimeRemaining = () => {
           const now = Date.now();
-          const remaining = Math.max(0, Math.floor((timer.endTime - now) / 1000));
+          let adjustedEndTime = timer.endTime;
+          
+          // Ajustar endTime baseado no tempo pausado
+          if (timer.totalPausedTime) {
+            adjustedEndTime += timer.totalPausedTime;
+          }
+          
+          // Se estiver pausado agora, adicionar o tempo de pausa atual
+          if (timer.isPaused && timer.pausedAt) {
+            adjustedEndTime += (now - timer.pausedAt);
+          }
+          
+          const remaining = Math.max(0, Math.floor((adjustedEndTime - now) / 1000));
           setTimeRemaining(remaining);
           
           if (remaining === 0 && timerIntervalRef.current) {
@@ -724,7 +789,10 @@ function App() {
           clearInterval(timerIntervalRef.current);
         }
         
-        timerIntervalRef.current = setInterval(updateTimeRemaining, 1000);
+        // Não iniciar interval se estiver pausado
+        if (!timer.isPaused) {
+          timerIntervalRef.current = setInterval(updateTimeRemaining, 1000);
+        }
       } else {
         setTimeRemaining(0);
         if (timerIntervalRef.current) {
@@ -1091,11 +1159,44 @@ function App() {
             <div className="timer-info">
               {isTimeActive() ? (
                 <div className="timer-active">
-                  <span className="timer-display">⏰ {formatTime(timeRemaining)}</span>
+                  <span className="timer-display">
+                    ⏰ {formatTime(timeRemaining)}
+                    {roomTimer && roomTimer.isPaused && (
+                      <span className="pause-indicator"> (PAUSADO)</span>
+                    )}
+                    {roomTimer && roomTimer.extraTimeAdded && (
+                      <span className="extra-time-indicator"> (+{roomTimer.extraTimeAdded}min)</span>
+                    )}
+                  </span>
                   {isRoomOwner && (
-                    <button className="stop-timer-button" onClick={stopTimer}>
-                      ⏹️ Parar
-                    </button>
+                    <div className="timer-controls">
+                      <div className="timer-main-controls">
+                        {roomTimer && roomTimer.isPaused ? (
+                          <button className="resume-timer-button" onClick={resumeTimer}>
+                            ▶️ Continuar
+                          </button>
+                        ) : (
+                          <button className="pause-timer-button" onClick={pauseTimer}>
+                            ⏸️ Pausar
+                          </button>
+                        )}
+                        <button className="stop-timer-button" onClick={stopTimer}>
+                          ⏹️ Parar
+                        </button>
+                      </div>
+                      <div className="timer-extra-controls">
+                        <span className="extra-time-label">Adicionar:</span>
+                        <button className="add-time-button" onClick={() => addExtraTime(1)}>
+                          +1min
+                        </button>
+                        <button className="add-time-button" onClick={() => addExtraTime(5)}>
+                          +5min
+                        </button>
+                        <button className="add-time-button" onClick={() => addExtraTime(10)}>
+                          +10min
+                        </button>
+                      </div>
+                    </div>
                   )}
                 </div>
               ) : roomTimer && roomTimer.endTime && timeRemaining === 0 ? (
@@ -1345,7 +1446,7 @@ function App() {
           ownerName={selectedChestOwner === playerIdRef.current ? playerName : 
             (otherPlayers[selectedChestOwner]?.name || selectedChestOwner)}
           isOwner={selectedChestOwner === playerIdRef.current}
-          canAddCards={isTimeActive()}
+          canAddCards={canAddCards()}
         />
       )}
 
