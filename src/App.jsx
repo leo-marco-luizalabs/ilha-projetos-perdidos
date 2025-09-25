@@ -91,30 +91,169 @@ function App() {
   const islandVotingRefRef = useRef(null);
   const planningRefRef = useRef(null);
   const sessionSummaryRefRef = useRef(null);
+  const roomOwnerRefRef = useRef(null);
 
-  // Funções para gerenciar salas
-  const handleJoinRoom = (code, name, color, id) => {
-    // Encontrar o personagem baseado na cor
-    const character = availableCharacters.find(char => char.id === id) || availableCharacters[0];
+  // Estado para controlar recuperação de sessão
+  const [sessionRecoveryData, setSessionRecoveryData] = useState(null);
 
-    setRoomCode(code);
-    setPlayerName(name);
-    setPlayerColor(color);
-    setPlayerCharacter(character);
-    setCurrentRoom(code);
-    setIsRoomOwner(false); // Quem entra não é dono
+  // Funções para gerenciar recuperação de sessão
+  const saveSessionData = (roomCode, playerData) => {
+    try {
+      const sessionData = {
+        playerId: playerIdRef.current,
+        playerName: playerData.name,
+        playerColor: playerData.color,
+        playerCharacter: playerData.character,
+        isRoomOwner: playerData.isOwner,
+        timestamp: Date.now(),
+        roomCode
+      };
+      localStorage.setItem(`session_${roomCode}`, JSON.stringify(sessionData));
+    } catch (error) {
+      console.error('Erro ao salvar dados da sessão:', error);
+    }
   };
 
-  const handleCreateRoom = (code, name, color, id) => {
-    // Encontrar o personagem baseado na cor
-    const character = availableCharacters.find(char => char.id === id) || availableCharacters[0];
+  const loadSessionData = (roomCode) => {
+    try {
+      const savedData = localStorage.getItem(`session_${roomCode}`);
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        // Verificar se a sessão não é muito antiga (24 horas)
+        if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
+          return data;
+        } else {
+          // Remover sessão expirada
+          localStorage.removeItem(`session_${roomCode}`);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados da sessão:', error);
+    }
+    return null;
+  };
 
-    setRoomCode(code);
-    setPlayerName(name);
-    setPlayerColor(color);
-    setPlayerCharacter(character);
-    setCurrentRoom(code);
-    setIsRoomOwner(true); // Quem cria é dono
+  const clearSessionData = (roomCode) => {
+    try {
+      localStorage.removeItem(`session_${roomCode}`);
+    } catch (error) {
+      console.error('Erro ao limpar dados da sessão:', error);
+    }
+  };
+
+  // Função para verificar se o jogador pode recuperar a sessão
+  const checkSessionRecovery = async (roomCode) => {
+    const savedSession = loadSessionData(roomCode);
+    if (!savedSession) return null;
+
+    try {
+      // Verificar se a sala ainda existe e validar dados do Firebase
+      const roomSnapshot = await db.ref(`rooms/${roomCode}`).once('value');
+      if (!roomSnapshot.exists()) {
+        clearSessionData(roomCode);
+        return null;
+      }
+
+      const roomData = roomSnapshot.val();
+      
+      // Verificar se o jogador era dono da sala
+      if (savedSession.isRoomOwner && roomData.owner) {
+        // Validar se ainda é o dono (baseado no playerId salvo no Firebase)
+        if (roomData.owner.playerId === savedSession.playerId) {
+          return savedSession;
+        }
+      } else if (!savedSession.isRoomOwner) {
+        // Para jogadores normais, sempre permitir recuperação
+        return savedSession;
+      }
+    } catch (error) {
+      console.error('Erro ao verificar recuperação de sessão:', error);
+    }
+    
+    return null;
+  };
+
+  // Funções para gerenciar salas
+  const handleJoinRoom = async (code, name, color, id) => {
+    // Verificar se há uma sessão para recuperar
+    const recoveryData = await checkSessionRecovery(code);
+    
+    if (recoveryData) {
+      // Usar playerId da sessão anterior
+      playerIdRef.current = recoveryData.playerId;
+      
+      // Recuperar dados da sessão
+      setRoomCode(code);
+      setPlayerName(recoveryData.playerName);
+      setPlayerColor(recoveryData.playerColor);
+      setPlayerCharacter(recoveryData.playerCharacter);
+      setCurrentRoom(code);
+      setIsRoomOwner(recoveryData.isRoomOwner);
+      
+      setSessionRecoveryData(recoveryData);
+    } else {
+      // Encontrar o personagem baseado na cor
+      const character = availableCharacters.find(char => char.id === id) || availableCharacters[0];
+
+      setRoomCode(code);
+      setPlayerName(name);
+      setPlayerColor(color);
+      setPlayerCharacter(character);
+      setCurrentRoom(code);
+      setIsRoomOwner(false); // Quem entra não é dono
+      
+      // Salvar dados da nova sessão
+      saveSessionData(code, {
+        name,
+        color,
+        character,
+        isOwner: false
+      });
+    }
+  };
+
+  const handleCreateRoom = async (code, name, color, id) => {
+    // Verificar se há uma sessão para recuperar (caso seja o mesmo dono retornando)
+    const recoveryData = await checkSessionRecovery(code);
+    
+    if (recoveryData && recoveryData.isRoomOwner) {
+      // Usar playerId da sessão anterior se era o dono
+      playerIdRef.current = recoveryData.playerId;
+      
+      setRoomCode(code);
+      setPlayerName(recoveryData.playerName);
+      setPlayerColor(recoveryData.playerColor);
+      setPlayerCharacter(recoveryData.playerCharacter);
+      setCurrentRoom(code);
+      setIsRoomOwner(true);
+      
+      setSessionRecoveryData(recoveryData);
+    } else {
+      // Encontrar o personagem baseado na cor
+      const character = availableCharacters.find(char => char.id === id) || availableCharacters[0];
+
+      setRoomCode(code);
+      setPlayerName(name);
+      setPlayerColor(color);
+      setPlayerCharacter(character);
+      setCurrentRoom(code);
+      setIsRoomOwner(true); // Quem cria é dono
+      
+      // Salvar dados da nova sessão e salvar informação do dono no Firebase
+      saveSessionData(code, {
+        name,
+        color,
+        character,
+        isOwner: true
+      });
+      
+      // Salvar informação do dono da sala no Firebase
+      db.ref(`rooms/${code}/owner`).set({
+        playerId: playerIdRef.current,
+        name,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
   };
 
   const handleLeaveRoom = () => {
@@ -149,6 +288,9 @@ function App() {
     if (sessionSummaryRefRef.current) {
       sessionSummaryRefRef.current.off();
     }
+    if (roomOwnerRefRef.current) {
+      roomOwnerRefRef.current.off();
+    }
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
     }
@@ -174,6 +316,12 @@ function App() {
     setCardVotes({});
     setUserVotes({});
     setVotingFinished(false);
+    setSessionRecoveryData(null);
+    
+    // Limpar dados de sessão do localStorage apenas se o usuário sair intencionalmente
+    if (currentRoom) {
+      clearSessionData(currentRoom);
+    }
   };
 
   // Função para copiar código da sala
@@ -810,6 +958,16 @@ function App() {
           clearInterval(timerIntervalRef.current);
           timerIntervalRef.current = null;
         }
+      }
+    });
+
+    // Escutar informações do dono da sala
+    roomOwnerRefRef.current = db.ref(`rooms/${currentRoom}/owner`);
+    roomOwnerRefRef.current.on('value', (snapshot) => {
+      const ownerData = snapshot.val();
+      if (ownerData && ownerData.playerId === playerIdRef.current) {
+        // Confirmar que ainda é o dono da sala
+        setIsRoomOwner(true);
       }
     });
 
@@ -1535,6 +1693,27 @@ function App() {
         isOpen={showInstructions}
         onClose={() => setShowInstructions(false)}
       />
+
+      {/* Indicador de sessão recuperada */}
+      {sessionRecoveryData && (
+        <div className="session-recovery-notification">
+          <div className="recovery-content">
+            <h3>🔄 Sessão Recuperada!</h3>
+            <p>Seus dados foram restaurados:</p>
+            <ul>
+              <li>Nome: <strong>{sessionRecoveryData.playerName}</strong></li>
+              <li>Personagem: <strong>{sessionRecoveryData.playerCharacter.name}</strong></li>
+              <li>Status: <strong>{sessionRecoveryData.isRoomOwner ? 'Dono da Sala' : 'Participante'}</strong></li>
+            </ul>
+            <button 
+              onClick={() => setSessionRecoveryData(null)}
+              className="btn btn-primary"
+            >
+              Entendi
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
