@@ -76,7 +76,7 @@ const InstructionsModal = ({ isOpen, onClose }) => {
 
             <div className="step">
               <h4>6. 🏝️ Votação da Ilha</h4>
-              <p>• Decida quais itens "deixar na ilha" (não priorizar agora)</p>
+              <p>• Decida quais itens "jogar fora na praia" (não priorizar agora)</p>
               <p>• Vote nos cards que podem ser adiados</p>
               <p>• Os cards restantes viram planos de ação</p>
             </div>
