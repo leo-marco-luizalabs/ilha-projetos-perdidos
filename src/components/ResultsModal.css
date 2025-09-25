@@ -1199,6 +1199,39 @@
   font-weight: 600;
 }
 
+/* Status dos Jogadores - Votação da Ilha */
+.island-voting-status {
+  background: rgba(168, 85, 247, 0.05);
+  border-color: #a855f7;
+}
+
+.island-voting-status h3 {
+  color: #7c3aed;
+}
+
+.all-ready-indicator {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border: 2px solid #22c55e;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.all-ready-indicator p {
+  margin: 4px 0;
+}
+
+.all-ready-indicator p:first-child {
+  color: #15803d;
+  font-size: 1.1rem;
+}
+
+.all-ready-indicator p:last-child {
+  color: #166534;
+  font-size: 0.9rem;
+}
+
 .voting-actions {
   background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
   border-color: #10b981;

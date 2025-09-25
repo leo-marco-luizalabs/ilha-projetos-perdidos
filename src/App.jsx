@@ -69,6 +69,7 @@ function App() {
   const [islandVotingPhase, setIslandVotingPhase] = useState(false);
   const [islandUserVotes, setIslandUserVotes] = useState({});
   const [islandVoteCounts, setIslandVoteCounts] = useState({});
+  const [rawIslandVotingData, setRawIslandVotingData] = useState({});
   const [planningPhase, setPlanningPhase] = useState(false);
   const [cardPlans, setCardPlans] = useState({});
   const [sessionSummary, setSessionSummary] = useState(null);
@@ -895,11 +896,16 @@ function App() {
           
           setIslandVoteCounts(voteCounts);
           setIslandUserVotes(userVotes);
+          // Armazenar dados detalhados dos votos para cálculo de status
+          setRawIslandVotingData(islandVoting.votes || {});
+        } else {
+          setRawIslandVotingData({});
         }
       } else {
         setIslandVotingPhase(false);
         setIslandVoteCounts({});
         setIslandUserVotes({});
+        setRawIslandVotingData({});
       }
     });
 
@@ -1495,6 +1501,7 @@ function App() {
           islandVotingPhase={islandVotingPhase}
           islandUserVotes={islandUserVotes}
           islandVoteCounts={islandVoteCounts}
+          rawIslandVotingData={rawIslandVotingData}
           planningPhase={planningPhase}
           cardPlans={cardPlans}
           sessionSummary={sessionSummary}

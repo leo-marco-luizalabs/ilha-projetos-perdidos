@@ -22,6 +22,7 @@ const ResultsModal = ({
   islandVotingPhase,
   islandUserVotes,
   islandVoteCounts,
+  rawIslandVotingData,
   planningPhase,
   cardPlans,
   sessionSummary,
@@ -119,6 +120,65 @@ const ResultsModal = ({
     return playersStatus;
   };
 
+  // Calcular status de votação dos jogadores na votação da ilha
+  const calculateIslandPlayersStatus = () => {
+    if (!islandVotingPhase) return {};
+    
+    const playersStatus = {};
+    
+    // Obter cards disponíveis para votação na ilha (cards categorizados como 'melhorar')
+    const categories = categorizeCards();
+    const islandCards = categories.melhorar || [];
+    
+    // Calcular limite de votos (máximo 3 ou o número de cards disponíveis)
+    const voteLimit = Math.min(3, islandCards.length);
+    
+    // Debug: logar dados para verificação
+    if (isOwner) {
+      console.log('🔍 Island Voting Debug:', {
+        rawIslandVotingData,
+        islandVoteCounts,
+        islandUserVotes,
+        otherPlayers: Object.keys(otherPlayers || {}),
+        voteLimit
+      });
+    }
+    
+    // Para o jogador atual
+    const currentUserVotes = Object.keys(islandUserVotes).filter(id => islandUserVotes[id]);
+    playersStatus[userId] = {
+      name: 'Você',
+      votesCount: currentUserVotes.length,
+      voteLimit: voteLimit,
+      isReady: currentUserVotes.length >= voteLimit
+    };
+    
+    // Para outros jogadores - usar dados reais do Firebase
+    Object.keys(otherPlayers || {}).forEach(playerId => {
+      const player = otherPlayers[playerId];
+      
+      // Contar quantos votos reais este jogador fez usando rawIslandVotingData
+      let playerVotesCount = 0;
+      
+      // Percorrer todos os cards e verificar se este jogador votou em cada um
+      Object.keys(rawIslandVotingData || {}).forEach(cardId => {
+        const cardVotes = rawIslandVotingData[cardId] || {};
+        if (cardVotes[playerId]) {
+          playerVotesCount++;
+        }
+      });
+      
+      playersStatus[playerId] = {
+        name: player.name || 'Jogador',
+        votesCount: playerVotesCount,
+        voteLimit: voteLimit,
+        isReady: playerVotesCount >= voteLimit
+      };
+    });
+    
+    return playersStatus;
+  };
+
   // Renderizar status dos jogadores
   const renderPlayersStatus = () => {
     if (!isVotingPhase || votingFinished) return null;
@@ -159,6 +219,58 @@ const ResultsModal = ({
             </div>
           ))}
         </div>
+      </div>
+    );
+  };
+
+  // Renderizar status dos jogadores na votação da ilha
+  const renderIslandPlayersStatus = () => {
+    if (!islandVotingPhase) return null;
+    
+    const playersStatus = calculateIslandPlayersStatus();
+    const players = Object.entries(playersStatus);
+    
+    if (players.length === 0) return null;
+
+    // Criar uma chave única para forçar re-render quando os dados mudarem
+    const dataKey = `island-${Object.keys(rawIslandVotingData).length}-${JSON.stringify(islandVoteCounts)}`;
+
+    return (
+      <div className="players-status-section island-voting-status" key={dataKey}>
+        <h3>Status dos Jogadores - Votação dos Cards a Melhorar</h3>
+        <div className="players-status-list">
+          {players.map(([playerId, status]) => (
+            <div 
+              key={`${playerId}-${dataKey}`}
+              className={`player-status-item ${status.isReady ? 'ready' : 'voting'}`}
+            >
+              <div className="player-name">
+                {status.name}
+                {playerId === userId && <span className="you-indicator"> (você)</span>}
+              </div>
+              <div className="player-progress">
+                <span className="vote-progress">
+                  {status.votesCount}/{status.voteLimit} votos
+                </span>
+                <div className="status-indicator">
+                  {status.isReady ? (
+                    <span className="ready-badge">✅ Pronto</span>
+                  ) : (
+                    <span className="voting-badge">🗳️ Votando</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Indicador se todos terminaram */}
+        {players.length > 0 && players.every(([, status]) => status.isReady) && (
+          <div className="all-ready-indicator">
+            <p>🎉 <strong>Todos os jogadores terminaram de votar!</strong></p>
+            {isOwner &&   <p>Você pode finalizar a votação quando quiser.</p>}
+          </div>
+        )}
       </div>
     );
   };
@@ -635,6 +747,9 @@ const ResultsModal = ({
             </div>
           ))}
         </div>
+
+        {/* Status dos jogadores para o dono da sala */}
+        {renderIslandPlayersStatus()}
 
         {isOwner && (
           <div className="phase-controls">
