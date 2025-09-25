@@ -70,6 +70,7 @@ function App() {
   const [islandUserVotes, setIslandUserVotes] = useState({});
   const [islandVoteCounts, setIslandVoteCounts] = useState({});
   const [rawIslandVotingData, setRawIslandVotingData] = useState({});
+  const [islandVoteLimit, setIslandVoteLimit] = useState(3); // Limite configurável de votos
   const [planningPhase, setPlanningPhase] = useState(false);
   const [cardPlans, setCardPlans] = useState({});
   const [sessionSummary, setSessionSummary] = useState(null);
@@ -351,7 +352,8 @@ function App() {
       isActive: true,
       startedAt: firebase.database.ServerValue.TIMESTAMP,
       startedBy: playerName,
-      votes: {}
+      votes: {},
+      voteLimit: islandVoteLimit // Incluir limite configurado
     });
   };
 
@@ -365,6 +367,14 @@ function App() {
       startedBy: playerName,
       plans: {}
     });
+  };
+
+  // Função para configurar o limite de votos da votação da ilha
+  const setIslandVotingLimit = (limit) => {
+    if (!isRoomOwner || !currentRoom) return;
+    
+    const validLimit = Math.max(1, Math.min(10, parseInt(limit) || 3)); // Entre 1 e 10 votos
+    db.ref(`rooms/${currentRoom}/islandVoting/voteLimit`).set(validLimit);
   };
 
   const voteIslandCard = (cardId) => {
@@ -879,6 +889,9 @@ function App() {
       if (islandVoting) {
         setIslandVotingPhase(islandVoting.isActive || false);
         
+        // Configurar limite de votos (padrão 3 se não estiver definido)
+        setIslandVoteLimit(islandVoting.voteLimit || 3);
+        
         // Processar votos da ilha
         if (islandVoting.votes) {
           const voteCounts = {};
@@ -906,6 +919,7 @@ function App() {
         setIslandVoteCounts({});
         setIslandUserVotes({});
         setRawIslandVotingData({});
+        setIslandVoteLimit(3); // Reset para padrão
       }
     });
 
@@ -1502,6 +1516,8 @@ function App() {
           islandUserVotes={islandUserVotes}
           islandVoteCounts={islandVoteCounts}
           rawIslandVotingData={rawIslandVotingData}
+          islandVoteLimit={islandVoteLimit}
+          setIslandVotingLimit={setIslandVotingLimit}
           planningPhase={planningPhase}
           cardPlans={cardPlans}
           sessionSummary={sessionSummary}

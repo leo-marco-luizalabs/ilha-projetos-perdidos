@@ -23,6 +23,8 @@ const ResultsModal = ({
   islandUserVotes,
   islandVoteCounts,
   rawIslandVotingData,
+  islandVoteLimit,
+  setIslandVotingLimit,
   planningPhase,
   cardPlans,
   sessionSummary,
@@ -130,8 +132,8 @@ const ResultsModal = ({
     const categories = categorizeCards();
     const islandCards = categories.melhorar || [];
     
-    // Calcular limite de votos (máximo 3 ou o número de cards disponíveis)
-    const voteLimit = Math.min(3, islandCards.length);
+    // Usar limite configurável ou padrão de 3
+    const voteLimit = Math.min(islandVoteLimit || 3, islandCards.length);
     
     // Debug: logar dados para verificação
     if (isOwner) {
@@ -356,6 +358,11 @@ const ResultsModal = ({
   // Calcular limite de votos para votação dos cards a melhorar
   const calculateVoteLimit = () => {
     const improveCardCount = categories.melhorar.length;
+    // Usar limite configurável ou cálculo automático como fallback
+    if (islandVoteLimit && islandVoteLimit > 0) {
+      return Math.min(islandVoteLimit, improveCardCount);
+    }
+    // Fallback para lógica anterior se não houver limite configurado
     if (improveCardCount > 5) {
       return Math.ceil(improveCardCount * 0.2); // 20% dos cards
     }
@@ -496,6 +503,28 @@ const ResultsModal = ({
           <div className="island-voting-info">
             <h3>Próxima Fase: Votação dos Cards a Melhorar</h3>
             <p>Os cards que precisam ser melhorados passarão por uma nova votação.</p>
+            
+            {/* Configuração do limite de votos */}
+            <div className="vote-limit-config">
+              <label htmlFor="voteLimit">
+                <strong>Quantos votos cada jogador pode dar?</strong>
+              </label>
+              <div className="vote-limit-controls">
+                <input
+                  id="voteLimit"
+                  type="number"
+                  min="1"
+                  max={Math.min(10, categories.melhorar.length)}
+                  value={islandVoteLimit || 3}
+                  onChange={(e) => setIslandVotingLimit(parseInt(e.target.value) || 3)}
+                  className="vote-limit-input"
+                />
+                <span className="vote-limit-help">
+                  (máximo {Math.min(10, categories.melhorar.length)} votos)
+                </span>
+              </div>
+            </div>
+            
             <p>Cada participante terá direito a <strong>{voteLimit} votos</strong>.</p>
             <button 
               className="btn btn-primary"

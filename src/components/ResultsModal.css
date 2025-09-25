@@ -424,6 +424,55 @@
   margin-bottom: 25px;
 }
 
+.vote-limit-config {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.vote-limit-config label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #d97706;
+}
+
+.vote-limit-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.vote-limit-input {
+  width: 60px;
+  padding: 0.5rem;
+  border: 2px solid #f59e0b;
+  border-radius: 6px;
+  background: white;
+  color: #d97706;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.vote-limit-input:focus {
+  outline: none;
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.vote-limit-help {
+  font-size: 0.85rem;
+  color: #92400e;
+  font-style: italic;
+}
+
 .vote-limit-info h4 {
   margin: 0 0 10px 0;
   color: #d97706;
