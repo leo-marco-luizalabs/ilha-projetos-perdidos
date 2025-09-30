@@ -8,23 +8,7 @@ function Initial({ onJoinRoom, onCreateRoom }) {
   const [selectedCharacterIndex, setSelectedCharacterIndex] = useState(0); // Índice do personagem selecionado
   const [activeTab, setActiveTab] = useState('join'); // 'join' ou 'create'  
 
-  // Funções para navegar no carrossel
-  const nextCharacter = () => {
-    setSelectedCharacterIndex((prev) => (prev + 1) % availableCharacters.length);
-  };
 
-  const prevCharacter = () => {
-    setSelectedCharacterIndex((prev) => (prev - 1 + availableCharacters.length) % availableCharacters.length);
-  };
-
-  // Navegação por teclado
-  const handleKeyDown = (e) => {
-    if (e.key === 'ArrowRight') {
-      nextCharacter();
-    } else if (e.key === 'ArrowLeft') {
-      prevCharacter();
-    }
-  };
 
   const selectedCharacter = availableCharacters[selectedCharacterIndex];
 
@@ -68,53 +52,31 @@ function Initial({ onJoinRoom, onCreateRoom }) {
         <div className="tab-content">
           {activeTab === 'join' ? (
             <form onSubmit={handleJoinRoom} className="form">
-              {/* Seleção de Personagem - Carrossel */}
+              {/* Seleção de Personagem - Grid */}
               <div className="input-group">
                 <label className="label-character">Escolha seu personagem:</label>
-                <div className="character-carousel" onKeyDown={handleKeyDown} tabIndex="0">
-                  <button 
-                    type="button" 
-                    className="carousel-btn prev"
-                    onClick={prevCharacter}
-                    title="Personagem anterior"
-                  >
-                    ‹
-                  </button>
-                  
-                  <div className="character-display">
-                    <div 
-                      className="player-preview large character-preview"
+                <div className="characters-grid">
+                  {availableCharacters.map((character, index) => (
+                    <div
+                      key={character.id}
+                      className={`character-card ${index === selectedCharacterIndex ? 'selected' : ''}`}
+                      onClick={() => setSelectedCharacterIndex(index)}
                     >
-                      <img 
-                        src={selectedCharacter.frontImage}
-                        alt={`${selectedCharacter.name} - Frente`}
-                        onError={(e) => {
-                          // Fallback para cor sólida se a imagem não carregar
-                          e.target.style.display = 'none';
-                          e.target.parentElement.style.backgroundColor = selectedCharacter.color;
-                        }}
-                      />
-                    </div>
-                    <div className="character-indicators">
-                      {availableCharacters.map((_, index) => (
-                        <div
-                          key={index}
-                          className={`indicator ${index === selectedCharacterIndex ? 'active' : ''}`}
-                          onClick={() => setSelectedCharacterIndex(index)}
-                          title={`Personagem ${availableCharacters[index].name}`}
+                      <div className="player-preview character-preview">
+                        <img 
+                          src={character.frontImage}
+                          onError={(e) => {
+                            // Fallback para cor sólida se a imagem não carregar
+                            e.target.style.display = 'none';
+                            e.target.parentElement.style.backgroundColor = character.color;
+                          }}
                         />
-                      ))}
+                      </div>
+                      {index === selectedCharacterIndex && (
+                        <div className="selected-indicator">✓</div>
+                      )}
                     </div>
-                  </div>
-                  
-                  <button 
-                    type="button" 
-                    className="carousel-btn next"
-                    onClick={nextCharacter}
-                    title="Próximo personagem"
-                  >
-                    ›
-                  </button>
+                  ))}
                 </div>
               </div>
 
@@ -149,53 +111,31 @@ function Initial({ onJoinRoom, onCreateRoom }) {
             </form>
           ) : (
             <form onSubmit={handleCreateRoom} className="form">
-              {/* Seleção de Personagem - Carrossel */}
+              {/* Seleção de Personagem - Grid */}
               <div className="input-group">
                 <label>Escolha seu personagem:</label>
-                <div className="character-carousel" onKeyDown={handleKeyDown} tabIndex="0">
-                  <button 
-                    type="button" 
-                    className="carousel-btn prev"
-                    onClick={prevCharacter}
-                    title="Personagem anterior"
-                  >
-                    ‹
-                  </button>
-                  
-                  <div className="character-display">
-                    <div 
-                      className="player-preview large character-preview"
+                <div className="characters-grid">
+                  {availableCharacters.map((character, index) => (
+                    <div
+                      key={character.id}
+                      className={`character-card ${index === selectedCharacterIndex ? 'selected' : ''}`}
+                      onClick={() => setSelectedCharacterIndex(index)}
                     >
-                      <img 
-                        src={selectedCharacter.frontImage}
-                        alt={`${selectedCharacter.name} - Frente`}
-                        onError={(e) => {
-                          // Fallback para cor sólida se a imagem não carregar
-                          e.target.style.display = 'none';
-                          e.target.parentElement.style.backgroundColor = selectedCharacter.color;
-                        }}
-                      />
-                    </div>
-                    <div className="character-indicators">
-                      {availableCharacters.map((_, index) => (
-                        <div
-                          key={index}
-                          className={`indicator ${index === selectedCharacterIndex ? 'active' : ''}`}
-                          onClick={() => setSelectedCharacterIndex(index)}
-                          title={`Personagem ${availableCharacters[index].name}`}
+                      <div className="player-preview character-preview">
+                        <img 
+                          src={character.frontImage}
+                          onError={(e) => {
+                            // Fallback para cor sólida se a imagem não carregar
+                            e.target.style.display = 'none';
+                            e.target.parentElement.style.backgroundColor = character.color;
+                          }}
                         />
-                      ))}
+                      </div>
+                      {index === selectedCharacterIndex && (
+                        <div className="selected-indicator">✓</div>
+                      )}
                     </div>
-                  </div>
-                  
-                  <button 
-                    type="button" 
-                    className="carousel-btn next"
-                    onClick={nextCharacter}
-                    title="Próximo personagem"
-                  >
-                    ›
-                  </button>
+                  ))}
                 </div>
               </div>
 

@@ -61,5 +61,32 @@ export const availableCharacters = [
       leftImage: 'assets/characters/persona-7-left.png', // Usando perfil como lateral
       rightImage: 'assets/characters/persona-7-right.png', 
       color: 'pink'
+  },
+  { 
+      id: 'show-5', 
+      name: 'Show-5 ',
+      frontImage: 'assets/characters/persona-8-front.png',
+      backImage: 'assets/characters/persona-8-back.png',
+      leftImage: 'assets/characters/persona-8-left.png', // Usando perfil como lateral
+      rightImage: 'assets/characters/persona-8-right.png', 
+      color: 'pinkie'
+  },
+  { 
+      id: 'show-6', 
+      name: 'Show-6 ',
+      frontImage: 'assets/characters/persona-9-front.png',
+      backImage: 'assets/characters/persona-9-back.png',
+      leftImage: 'assets/characters/persona-9-left.png', // Usando perfil como lateral
+      rightImage: 'assets/characters/persona-9-right.png', 
+      color: 'pinkies'
+  },
+  { 
+      id: 'show-7', 
+      name: 'Show-7 ',
+      frontImage: 'assets/characters/persona-10-front.png',
+      backImage: 'assets/characters/persona-10-back.png',
+      leftImage: 'assets/characters/persona-10-left.png', // Usando perfil como lateral
+      rightImage: 'assets/characters/persona-10-right.png', 
+      color: 'pinky'
   }
 ]
