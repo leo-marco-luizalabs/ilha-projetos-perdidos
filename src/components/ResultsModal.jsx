@@ -128,7 +128,7 @@ const ResultsModal = ({
     
     const playersStatus = {};
     
-    // Obter cards disponíveis para votação na ilha (cards categorizados como 'melhorar')
+    // Obter cards disponíveis para votação na ilha (cards categorizados como 'melhorar' - Abrigo com goteira)
     const categories = categorizeCards();
     const islandCards = categories.melhorar || [];
     
@@ -239,7 +239,7 @@ const ResultsModal = ({
 
     return (
       <div className="players-status-section island-voting-status" key={dataKey}>
-        <h3>Status dos Jogadores - Votação dos Cards a Melhorar</h3>
+        <h3>Status dos Jogadores - Votação dos Cards do Abrigo com Goteira</h3>
         <div className="players-status-list">
           {players.map(([playerId, status]) => (
             <div 
@@ -355,7 +355,7 @@ const ResultsModal = ({
 
   const categories = categorizeCards();
 
-  // Calcular limite de votos para votação dos cards a melhorar
+  // Calcular limite de votos para votação dos cards do abrigo com goteira
   const calculateVoteLimit = () => {
     const improveCardCount = categories.melhorar.length;
     // Usar limite configurável ou cálculo automático como fallback
@@ -475,9 +475,9 @@ const ResultsModal = ({
               cards.length > 0 && (
                 <div key={category} className={`category-section ${category}`}>
                   <h3>
-                    {category === 'manter' && '✅ Armazenar na mochila'}
-                    {category === 'melhorar' && '🔧 Melhorar'}
-                    {category === 'deixarNaIlha' && '🏝️ Jogar fora na praia'}
+                    {category === 'manter' && '💎 Tesouros da ilha'}
+                    {category === 'melhorar' && '🏠 Abrigo com goteira'}
+                    {category === 'deixarNaIlha' && '🌊 Devolver pro mar'}
                     <span className="card-count">({cards.length} cards)</span>
                   </h3>
                   
@@ -486,9 +486,9 @@ const ResultsModal = ({
                       <div key={card.id} className="result-card">
                         <p className="card-text">{card.text}</p>
                         <div className="vote-summary">
-                          <span className="vote-item manter">Mochila: {card.voteCount.manter}</span>
-                          <span className="vote-item melhorar">Melhorar: {card.voteCount.melhorar}</span>
-                          <span className="vote-item deixar">Praia: {card.voteCount.deixarNaIlha}</span>
+                          <span className="vote-item manter">Tesouro: {card.voteCount.manter}</span>
+                          <span className="vote-item melhorar">Abrigo: {card.voteCount.melhorar}</span>
+                          <span className="vote-item deixar">Mar: {card.voteCount.deixarNaIlha}</span>
                         </div>
                       </div>
                     ))}
@@ -501,8 +501,8 @@ const ResultsModal = ({
 
         {isOwner && categories.melhorar.length > 0 && (
           <div className="island-voting-info">
-            <h3>Próxima Fase: Votação dos Cards a Melhorar</h3>
-            <p>Os cards que precisam ser melhorados passarão por uma nova votação.</p>
+            <h3>Próxima Fase: Votação dos Cards do Abrigo com Goteira</h3>
+            <p>Os cards que precisam de reparo no abrigo passarão por uma nova votação.</p>
             
             {/* Configuração do limite de votos */}
             <div className="vote-limit-config">
@@ -530,7 +530,7 @@ const ResultsModal = ({
               className="btn btn-primary"
               onClick={handleStartIslandVoting}
             >
-              Iniciar Votação dos Cards a Melhorar
+              Iniciar Votação dos Cards do Abrigo com Goteira
             </button>
           </div>
         )}
@@ -598,16 +598,16 @@ const ResultsModal = ({
           <h3>Como votar nos cards:</h3>
           <div className="vote-options-legend">
             <div className="legend-item raft">
-              <span className="legend-icon">✅</span>
-              <span className="legend-text">Armazenar na mochila - Este card está bom como está</span>
+              <span className="legend-icon">💎</span>
+              <span className="legend-text">Tesouros da ilha - Este card está bom como está</span>
             </div>
             <div className="legend-item island">
-              <span className="legend-icon">🔧</span>
-              <span className="legend-text">Melhorar - Este card precisa ser melhorado</span>
+              <span className="legend-icon">🏠</span>
+              <span className="legend-text">Abrigo com goteira - Este card precisa de reparo</span>
             </div>
             <div className="legend-item shipwreck">
-              <span className="legend-icon">🏝️</span>
-              <span className="legend-text">Jogar fora na praia - Este card não é prioritário agora</span>
+              <span className="legend-icon">🌊</span>
+              <span className="legend-text">Devolver pro mar - Este card não é prioritário agora</span>
             </div>
           </div>
         </div>
@@ -660,23 +660,23 @@ const ResultsModal = ({
                       <button
                         className={`vote-btn raft ${userVote === 'manter' ? 'voted' : ''}`}
                         onClick={() => onVote(card.id, 'manter')}
-                        title="Armazenar na mochila - Este card está bom como está"
+                        title="Tesouros da ilha - Este card está bom como está"
                       >
-                        ✅
+                        💎
                       </button>
                       <button
                         className={`vote-btn island ${userVote === 'melhorar' ? 'voted' : ''}`}
                         onClick={() => onVote(card.id, 'melhorar')}
-                        title="Melhorar - Este card precisa ser melhorado"
+                        title="Abrigo com goteira - Este card precisa de reparo"
                       >
-                        🔧
+                        🏠
                       </button>
                       <button
                         className={`vote-btn shipwreck ${userVote === 'deixarNaIlha' ? 'voted' : ''}`}
                         onClick={() => onVote(card.id, 'deixarNaIlha')}
-                        title="Jogar fora na praia - Este card não é prioritário agora"
+                        title="Devolver pro mar - Este card não é prioritário agora"
                       >
-                        🏝️
+                        🌊
                       </button>
                     </div>
 
@@ -684,9 +684,9 @@ const ResultsModal = ({
                     {userVote && (
                       <div className="user-vote-indicator">
                         Seu voto: {
-                          userVote === 'manter' ? '✅ Armazenar na mochila' :
-                          userVote === 'melhorar' ? '🔧 Melhorar' :
-                          '🏝️ Jogar fora na praia'
+                          userVote === 'manter' ? '💎 Tesouros da ilha' :
+                          userVote === 'melhorar' ? '🏠 Abrigo com goteira' :
+                          '🌊 Devolver pro mar'
                         }
                       </div>
                     )}
@@ -694,9 +694,9 @@ const ResultsModal = ({
                     {/* Contagem de votos - apenas para o dono ou quando votação finalizada */}
                     {(isOwner || votingFinished) && (
                       <div className="vote-results">
-                        <span className="vote-count raft">✅ {votes.manter || 0}</span>
-                        <span className="vote-count island">🔧 {votes.melhorar || 0}</span>
-                        <span className="vote-count shipwreck">🏝️ {votes.deixarNaIlha || 0}</span>
+                        <span className="vote-count raft">💎 {votes.manter || 0}</span>
+                        <span className="vote-count island">🏠 {votes.melhorar || 0}</span>
+                        <span className="vote-count shipwreck">🌊 {votes.deixarNaIlha || 0}</span>
                       </div>
                     )}
 
@@ -1030,9 +1030,9 @@ const ResultsModal = ({
             cards.length > 0 && (
               <div key={category} className={`category-section ${category}`}>
                 <h4>
-                  {category === 'manter' && '✅ Armazenar na mochila'}
-                  {category === 'melhorar' && '🔧 Melhorar'}
-                  {category === 'deixarNaIlha' && '🏝️ Jogar fora na praia'}
+                  {category === 'manter' && '💎 Tesouros da ilha'}
+                  {category === 'melhorar' && '🏠 Abrigo com goteira'}
+                  {category === 'deixarNaIlha' && '🌊 Devolver pro mar'}
                   <span className="card-count">({cards.length} cards)</span>
                 </h4>
                 
@@ -1041,9 +1041,9 @@ const ResultsModal = ({
                     <div key={card.id} className="result-card">
                       <p className="card-text">{card.text}</p>
                       <div className="vote-summary">
-                        <span className="vote-item manter">Mochila: {card.voteCount.manter}</span>
-                        <span className="vote-item melhorar">Melhorar: {card.voteCount.melhorar}</span>
-                        <span className="vote-item deixar">Praia: {card.voteCount.deixarNaIlha}</span>
+                        <span className="vote-item manter">Tesouro: {card.voteCount.manter}</span>
+                        <span className="vote-item melhorar">Abrigo: {card.voteCount.melhorar}</span>
+                        <span className="vote-item deixar">Mar: {card.voteCount.deixarNaIlha}</span>
                       </div>
                     </div>
                   ))}

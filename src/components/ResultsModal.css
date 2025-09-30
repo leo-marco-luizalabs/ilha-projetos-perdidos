@@ -145,8 +145,8 @@
 }
 
 .legend-item.shipwreck {
-  background: rgba(245, 158, 11, 0.1);
-  color: #d97706;
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
 }
 
 .legend-item.raft {
@@ -198,11 +198,11 @@
 }
 
 .vote-btn.shipwreck {
-  border-color: #f59e0b;
+  border-color: #3b82f6;
 }
 
 .vote-btn.shipwreck:hover {
-  background: #f59e0b;
+  background: #3b82f6;
   color: white;
 }
 
@@ -233,7 +233,7 @@
 }
 
 .vote-btn.shipwreck.voted {
-  background: #f59e0b;
+  background: #3b82f6;
   color: white;
 }
 
@@ -286,12 +286,12 @@
 }
 
 .shipwreck-section {
-  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-  border-color: #ef4444;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: #3b82f6;
 }
 
 .shipwreck-section h3 {
-  color: #dc2626;
+  color: #2563eb;
 }
 
 .raft-section {
@@ -332,12 +332,12 @@
 }
 
 .deixarNaIlha {
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-  border-color: #f59e0b;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-color: #0284c7;
 }
 
 .deixarNaIlha h3 {
-  color: #d97706;
+  color: #0369a1;
 }
 
 .pending-votes {
@@ -370,8 +370,8 @@
 }
 
 .shipwreck-card {
-  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-  border-color: #f87171;
+  background: linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%);
+  border-color: #60a5fa;
 }
 
 .raft-card {
@@ -1057,8 +1057,8 @@
 }
 
 .vote-count.shipwreck {
-  background: rgba(245, 158, 11, 0.1);
-  color: #d97706;
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
 }
 
 .vote-count.raft {
@@ -1405,7 +1405,7 @@
 }
 
 .vote-item.deixar {
-  background: #f59e0b;
+  background: #0284c7;
 }
 
 .no-data {
